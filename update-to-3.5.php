@@ -1,5 +1,8 @@
 <?php
 $file = is_file('vkwf_branch') ? 'vkwf_branch' : 'kwf_branch';
+if (!file_exists($file)) die("Execute this script in app root.\n");
+if (file_get_contents($file) != '3.4') die("This script will update from 3.4, update to 3.4 first.\n");
+
 file_put_contents($file, "3.5\n");
 echo "Changed $file to 3.5\n";
 
