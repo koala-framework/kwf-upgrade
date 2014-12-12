@@ -1,7 +1,7 @@
 <?php
 $file = is_file('vkwf_branch') ? 'vkwf_branch' : 'kwf_branch';
 if (!file_exists($file)) die("Execute this script in app root.\n");
-if (file_get_contents($file) != '3.7') die("This script will update from 3.7, update to 3.7 first.\n");
+if (trim(file_get_contents($file)) != '3.7') die("This script will update from 3.7, update to 3.7 first.\n");
 
 
 $c = array(
