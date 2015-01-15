@@ -1,0 +1,8 @@
+{
+    "name": "koala-framework/kwf-upgrade",
+    "description": "Scripts to upgrade Koala-Framework-Websites to newer version",
+    "require": {
+        "nikic/php-parser": "1.0.2"
+    },
+    "license": "BSD-2-Clause"
+}
