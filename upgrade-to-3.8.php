@@ -225,6 +225,18 @@ $files = glob_recursive('Component.php');
 replaceFiles($files, 'Kwc_List_Fade_Component', 'Kwc_Legacy_List_Fade_Component');
 replaceFiles($files, 'Kwc_List_Carousel_Component', 'Kwc_Legacy_List_Carousel_Component');
 
+function replaceComponentIcon($files) {
+    foreach ($files as $f) {
+        $content = file_get_contents($f);
+        $newContent = preg_replace('#(\[\'componentIcon\'\]\s*=\s*)new\s+Kwf_Asset\((\'[^\']+\')\)#', '\1\2', $content);
+        if ($newContent != $content) {
+            file_put_contents($f, $newContent);
+            echo "Change componentIcon setting in $f\n";
+        }
+    }
+}
+replaceComponentIcon($files);
+
 $files = glob_recursive('Component.php');
 $files = array_merge($files, glob_recursive('*.ini'));
 replaceFiles($files, 'ModernizrMediaQueries', 'ModernizrMediaqueries');
