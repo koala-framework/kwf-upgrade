@@ -68,6 +68,18 @@ function updateStatisticsConfig()
     }
 }
 
+function updateConfig()
+{
+    $content = file_get_contents('config.ini');
+    $original = $content;
+    $content = str_replace('userModel = ', 'user.model = ', $content);
+    $content = str_replace('kwc.pageTypes.', 'kwc.pageCategories.', $content);
+    if ($original != $content) {
+        file_put_contents('config.ini', $content);
+        echo "Updated config\n";
+    }
+}
+
 function replaceFiles($files, $from, $to) {
     foreach ($files as $f) {
         $content = file_get_contents($f);
@@ -153,6 +165,138 @@ function updateAclTrl()
     file_put_contents('app/Acl.php', $c);
     echo "updated app/Acl.php to use trlStatic\n";
 }
+
+
+
+function updateComponents()
+{
+    $info = _updateComponentsDir('components');
+    $ret = "\n";
+    if ($info['templates']) {
+        $count = count($info['templates']);
+        $ret .= "   following $count Templates have been adapted to new ifHasContent:\n";
+        foreach ($info['templates'] as $file) {
+            $ret .= "        $file\n";
+        }
+    }
+    if ($info['componentName']) {
+        $count = count($info['componentName']);
+        $ret .= "   following $count Components have been adapted to new static componentName:\n";
+        foreach ($info['componentName'] as $file) {
+            $ret .= "        $file\n";
+        }
+    }
+    if ($info['getCacheVars']) {
+        $count = count($info['getCacheVars']);
+        $ret .= "   Following $count Components have getCacheVars overridden and need to be adapted to getCacheMeta:\n";
+        foreach ($info['getCacheVars'] as $file) {
+            $ret .= "        $file\n";
+        }
+    }
+    if ($info['getStaticCacheVars']) {
+        $count = count($info['getStaticCacheVars']);
+        $ret .= "   Following $count Components have getStaticCacheVars overridden and need to be adapted to getStaticCacheMeta:\n";
+        foreach ($info['getStaticCacheVars'] as $file) {
+            $ret .= "        $file\n";
+        }
+    }
+    return $ret;
+        /* zum Testen
+        $string = '
+<?=$this->ifHasContent($this->item);?>
+<?=$this->ifHasContent();?>
+
+<?php echo $this->ifHasContent ( $this->item ) ; ?>
+<?php echo $this->ifHasContent ( ) ; ?>
+
+<?=$this->ifHasNoContent($this->item) ;?>
+<?=$this->ifHasNoContent() ;?>
+        ';
+        d($this->_replaceHasContent($string));
+        */
+}
+
+function _updateComponentsDir($dir)
+{
+    $ret = array(
+        'templates' => array(),
+        'getCacheVars' => array(),
+        'getStaticCacheVars' => array(),
+        'componentName' => array()
+    );
+    $count = 0;
+    foreach (new DirectoryIterator($dir) as $i) {
+        if (substr($i, 0, 1) == '.') continue;
+        $path = $dir . '/' . $i;
+        if (substr($path, -4) == '.tpl') {
+            $original = file_get_contents($path);
+            $new = _updateComponentsReplaceHasContent($original);
+            file_put_contents($path, $new);
+            if ($original != $new) $ret['templates'][] = $path;
+        }
+
+
+        if ($i == 'Component.php') {
+            $string = file_get_contents($path);
+            if (strpos($string, 'getCacheVars') !== false) {
+                $ret['getCacheVars'][] = $path;
+            }
+            if (strpos($string, 'getStaticCacheVars') !== false) {
+                $ret['getStaticCacheVars'][] = $path;
+            }
+            $string2 = _updateComponentsSettings($string);
+            if ($string2 != $string) {
+                $ret['componentName'][] = $path;
+                file_put_contents($path, $string2);
+            }
+
+        }
+
+        if (!is_dir($path)) continue;
+        $ret2 = _updateComponentsDir($path);
+        foreach ($ret as $key => $r) {
+            $ret[$key] = array_merge($r, $ret2[$key]);
+        }
+    }
+    return $ret;
+}
+
+function _updateComponentsReplaceHasContent($string)
+{
+    $pattern = '/(=|echo)\s*\$this->ifHasContent\s*\(\s*(\S+)\s*\)\s*;?/i';
+    $replacement = 'if (\$this->hasContent($2)) {';
+    $string = preg_replace($pattern, $replacement, $string);
+    $pattern = '/(=|echo)\s*\$this->ifHasNoContent\s*\(\s*(\S+)\s*\)\s*;?/i';
+    $replacement = 'if (!\$this->hasContent($2)) {';
+    $string = preg_replace($pattern, $replacement, $string);
+    $pattern = '/(=|echo)\s*\$this->ifHas(No)?Content\s*\(\s*\)\s*;?/i';
+    $replacement = '}';
+    $string = preg_replace($pattern, $replacement, $string);
+
+    return $string;
+}
+
+
+function _updateComponentsSettings($string)
+{
+    if (preg_match("#getSettings\(.*?\)\s*{\n(.*?)return \\\$ret;\s+}#ims", $string, $m)) {
+        $s = $m[1];
+        if (preg_match("#(componentName['\"]\]\s*= )(.*);#", $s, $m2)) {
+            $replaced = $m2[2];
+            $replaced = preg_replace('#trl(Kwf)?\\(#', 'trl\1Static(', $replaced);
+            $s = str_replace($m2[0], $m2[1].$replaced.';', $s);
+        }
+        if (preg_match("#(componentName['\"]\s*=> )(.*),#", $s, $m2)) {
+            $replaced = $m2[2];
+            $replaced = preg_replace('#trl(Kwf)?\\(#', 'trl\1Static(', $replaced);
+            $s = str_replace($m2[0], $m2[1].$replaced.',', $s);
+        }
+        $string = str_replace($m[1], $s, $string);
+    }
+    return $string;
+}
+
+
 $files = glob_recursive('Component.php');
 $files = array_merge($files, glob_recursive('config.ini'));
 replaceFiles($files, 'Kwc_Composite_Images_Component', 'Kwc_List_Images_Component');
@@ -170,3 +314,5 @@ updateIncludeCode();
 updateMasterCssClass();
 moveCssFiles();
 updateAclTrl();
+updateConfig();
+updateComponents();
