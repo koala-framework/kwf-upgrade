@@ -19,7 +19,6 @@ if (!$changed) {
 }
 file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
 
-
 //---------------------------------------------------------
 // Replace trl with trlStatic in getSettings
 require __DIR__ . '/vendor/autoload.php';
@@ -61,6 +60,9 @@ foreach ($files as $file) {
 }
 //---------------------------------------------------------
 
+
+passthru("php ".__DIR__."/upgrade-to-master/upgrade-update-scripts.php", $ret);
+if (!$ret) exit($ret);
 
 
 echo "\n";
