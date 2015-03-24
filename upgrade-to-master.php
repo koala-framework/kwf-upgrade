@@ -5,6 +5,9 @@ if (is_file('vkwf_branch') || is_file('kwf_branch')) {
 if (!is_file('composer.json')) {
     die("composer.json not found.\n");
 }
+if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
+    die("Execute composer install in kwf-upgrade first");
+}
 
 $changed = false;
 $c = json_decode(file_get_contents('composer.json'));
