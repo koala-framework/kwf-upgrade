@@ -68,5 +68,13 @@ passthru("php ".__DIR__."/upgrade-to-master/upgrade-update-scripts.php", $ret);
 if (!$ret) exit($ret);
 
 
+$c = file_get_contents('.htaccess');
+$c .= "
+<IfModule dir_module>
+    DirectorySlash Off
+</IfModule>
+";
+file_put_contents('.htaccess', $c);
+
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
