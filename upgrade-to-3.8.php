@@ -12,7 +12,7 @@ $c = array(
     "prefer-stable"=> true,
 );
 if (is_file('vkwf_branch')) {
-    exec("git rm vkwf_branch");
+    exec("git rm -f vkwf_branch");
     echo "removed kwf_branch file, composer.json is used instead\n";
     $c['require']['vivid-planet/vkwf'] = '3.8.x-dev';
     $c['repositories'] = array(
