@@ -13,7 +13,7 @@ $changed = false;
 $c = json_decode(file_get_contents('composer.json'));
 foreach ($c->require as $packageName=>$packageVersion) {
     if (substr($packageVersion, 0, 4) == "3.8.") {
-        $c->require->$packageName = 'dev-master';
+        $c->require->$packageName = '3.9.x-dev';
         $changed = true;
     }
 }
@@ -25,7 +25,7 @@ file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT')
 //---------------------------------------------------------
 // Replace trl with trlStatic in getSettings
 require __DIR__ . '/vendor/autoload.php';
-require __DIR__.'/upgrade-to-master/PhpParserVisitor.php';
+require __DIR__.'/upgrade-to-3.9/PhpParserVisitor.php';
 
 echo "Parsing code to check for trl in getSettings\n";
 function glob_recursive($pattern, $flags = 0) {
@@ -64,7 +64,7 @@ foreach ($files as $file) {
 //---------------------------------------------------------
 
 
-passthru("php ".__DIR__."/upgrade-to-master/upgrade-update-scripts.php", $ret);
+passthru("php ".__DIR__."/upgrade-to-3.9/upgrade-update-scripts.php", $ret);
 if (!$ret) exit($ret);
 
 
