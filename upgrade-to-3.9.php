@@ -46,7 +46,6 @@ $visitor = new PhpParserVisitor;
 $traverser->addVisitor($visitor);
 $files = glob_recursive('Component.php');
 foreach ($files as $file) {
-    echo $file."\n";
     $visitor->resetWrongTrlMasks();
     $traverser->traverse($parser->parse(file_get_contents($file)));
     $wrongTrlMasks = $visitor->getWrongTrlMasks();
@@ -58,8 +57,10 @@ foreach ($files as $file) {
             $count++;
         }
     }
-    file_put_contents($file, implode("\n", $lines));
-    echo "Changed $count\n";
+    if ($count) {
+        file_put_contents($file, implode("\n", $lines));
+        echo "$file: Changed $count\n";
+    }
 }
 //---------------------------------------------------------
 
