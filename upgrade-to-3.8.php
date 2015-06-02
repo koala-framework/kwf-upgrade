@@ -1,3 +1,4 @@
+#!/usr/bin/php
 <?php
 $file = is_file('vkwf_branch') ? 'vkwf_branch' : 'kwf_branch';
 if (!file_exists($file)) die("Execute this script in app root.\n");

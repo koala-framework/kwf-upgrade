@@ -1,3 +1,4 @@
+#!/usr/bin/php
 <?php
 if (is_file('vkwf_branch') || is_file('kwf_branch')) {
     die("This script will update from 3.8, update to 3.8 first.\n");
