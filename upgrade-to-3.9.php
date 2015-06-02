@@ -66,7 +66,7 @@ foreach ($files as $file) {
 
 
 passthru("php ".__DIR__."/upgrade-to-3.9/upgrade-update-scripts.php", $ret);
-if (!$ret) exit($ret);
+if ($ret) exit($ret);
 
 
 $c = file_get_contents('.htaccess');
