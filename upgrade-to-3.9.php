@@ -63,8 +63,43 @@ foreach ($files as $file) {
         echo "$file: Changed $count\n";
     }
 }
-//---------------------------------------------------------
 
+
+//---------------------------------------------------------
+// Convert trl.xml into po files
+if (file_exists(__DIR__."/trl.xml")) {
+    $trlXmlDocument = simplexml_load_string(file_get_contents(__DIR__."/trl.xml"));
+    $languages = array();
+    foreach ($trlXmlDocument->text as $trls) {
+        foreach ($trls as $lang => $trl) {
+            if ($lang === 'id') continue;
+            if (strpos($lang, '_plural') !== false) continue;
+            if (strpos($lang, 'context') !== false) continue;
+            $languages[$lang] = true;
+        }
+    }
+    if (!is_dir(__DIR__.'/trl')) mkdir(__DIR__.'/trl');
+    $config = parse_ini_file(__DIR__.'/config.ini');
+    $webcodeLanguage = $config['webCodeLanguage'];
+    foreach (array_keys($languages) as $lang) {
+        passthru('php '.__DIR__.'/upgrade-to-3.9/trl convertTrlXmlToPo '
+            .'--outputPath="'.__DIR__.'/trl/'.$lang.'.po" '
+            .'--webcodeLanguage="'.$webcodeLanguage.'" '
+            .'--targetLanguage="'.$lang.'" '
+            .'"'.__DIR__.'/trl.xml"', $ret);
+        if ($ret) exit($ret);
+    }
+    echo "Converted trl.xml into po files. Languages: ".implode(", ", array_keys($languages))."\n";
+    if (file_exists(__DIR__.'/vendor/vivid-planet/vkwf')) {
+        echo "trl folder added to gitignore\n";
+        file_put_contents('.gitignore', file_get_contents('.gitignore')."trl\n");
+    } else {
+        echo "no vivid-planet/vkwf existing. Didn't add trl folder to gitignore\n";
+    }
+}
+
+
+//---------------------------------------------------------
 
 passthru("php ".__DIR__."/upgrade-to-3.9/upgrade-update-scripts.php", $ret);
 if ($ret) exit($ret);
