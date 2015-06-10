@@ -89,6 +89,7 @@ if (file_exists(__DIR__."/trl.xml")) {
             .'"'.__DIR__.'/trl.xml"', $ret);
         if ($ret) exit($ret);
     }
+    unlink(__DIR__.'/trl.xml');
     echo "Converted trl.xml into po files. Languages: ".implode(", ", array_keys($languages))."\n";
     if (file_exists(__DIR__.'/vendor/vivid-planet/vkwf')) {
         echo "trl folder added to gitignore\n";
