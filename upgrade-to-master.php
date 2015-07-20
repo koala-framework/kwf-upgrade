@@ -27,9 +27,9 @@ if (!isset($c->extra->{'require-bower'})) {
 }
 $c->extra->{'require-bower'}->susy = "vivid-planet/susy#8161395e8ad5d75a0a15a0355feb9853ebaad369";
 $c->extra->{'require-bower'}->jquery = "1.11.3";
-echo "Added susyone to require-bower\n";
-
+echo "Added susyone and jquery to require-bower\n";
 file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
+
 
 function glob_recursive($pattern, $flags = 0) {
     $files = glob($pattern, $flags);
@@ -42,7 +42,6 @@ function glob_recursive($pattern, $flags = 0) {
     }
     return $files;
 }
-
 
 $files = array_merge(
     glob_recursive('*.tpl'),
@@ -65,6 +64,22 @@ foreach ($files as $file) {
         file_put_contents($file, $c);
     }
 }
+
+$files = array_merge(
+    glob_recursive('*.css'),
+    glob_recursive('*.scss'),
+    glob_recursive('*.js')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+    $c = str_replace('.frontend', '.kwfup-frontend', $c);
+    if ($c != $origC) {
+        echo "added kwfup- class prefix in $file\n";
+        file_put_contents($file, $c);
+    }
+}
+
 $files = array_merge(
     glob_recursive('*.tpl'),
     glob_recursive('*.twig')
@@ -80,6 +95,8 @@ foreach ($files as $file) {
         file_put_contents($file, $c);
     }
 }
+
+
 
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
