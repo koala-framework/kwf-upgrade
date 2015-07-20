@@ -97,6 +97,66 @@ foreach ($files as $file) {
 }
 
 
+$files = array_merge(
+    glob_recursive('Component.js'),
+    glob_recursive('Component.defer.js')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+    if (strpos($c, 'Kwf.Utils.ResponsiveEl') !== false) {
+        $c = "var responsiveEl = require('kwf/responsive-el');\n".$c;
+        $c = str_replace('Kwf.Utils.ResponsiveEl', 'responsiveEl', $c);
+    }
+    if (strpos($c, 'Kwf.onJElementReady') !== false || strpos($c, 'Kwf.onJElementShow') !== false || strpos($c, 'Kwf.onJElementHide') !== false || strpos($c, 'Kwf.onJElementWidthChange') !== false) {
+        $c = "var $ = require('jquery');\n".$c;
+        $c = "var onReady = require('kwf/on-ready');\n".$c;
+        $c = str_replace('Kwf.onJElementReady', 'onReady.onRender', $c);
+        $c = str_replace('Kwf.onJElementShow', 'onReady.onShow', $c);
+        $c = str_replace('Kwf.onJElementHide', 'onReady.onHide', $c);
+        $c = str_replace('Kwf.onJElementWidthChange', 'onReady.onResize', $c);
+    }
+    if (strpos($c, 'Kwf.onElementReady') !== false || strpos($c, 'Kwf.onElementShow') !== false || strpos($c, 'Kwf.onElementHide') !== false || strpos($c, 'Kwf.onElementWidthChange') !== false) {
+        $c = "var onReady = require('kwf/on-ready-ext2');\n".$c;
+        $c = str_replace('Kwf.onElementReady', 'onReady.onRender', $c);
+        $c = str_replace('Kwf.onElementShow', 'onReady.onShow', $c);
+        $c = str_replace('Kwf.onElementHide', 'onReady.onHide', $c);
+        $c = str_replace('Kwf.onElementWidthChange', 'onReady.onResize', $c);
+    }
+    if (strpos($c, 'Kwf.onComponentEvent') !== false || strpos($c, 'Kwf.fireComponentEvent') !== false) {
+        $c = "var componentEvent = require('kwf/component-event');\n".$c;
+        $c = str_replace('Kwf.onComponentEvent', 'componentEvent.on', $c);
+        $c = str_replace('Kwf.fireComponentEvent', 'componentEvent.trigger', $c);
+    }
+    if (strpos($c, 'Kwf.getKwcRenderUrl') !== false) {
+        $c = "var getKwcRenderUrl = require('kwf/get-kwc-render-url');\n".$c;
+        $c = str_replace('Kwf.getKwcRenderUrl', 'getKwcRenderUrl', $c);
+    }
+    if (strpos($c, 'Kwc.Form.findForm(') !== false) {
+        $c = "var findForm = require('kwf/frontend-form/find-form');\n".$c;
+        $c = str_replace('Kwc.Form.findForm(', 'findForm(', $c);
+    }
+    if (strpos($c, 'Kwf.log(') !== false) {
+        $c = "var kwfLog = require('kwf/log');\n".$c;
+        $c = str_replace('Kwf.log(', 'kwfLog(', $c);
+    }
+
+    if ($c != $origC) {
+        echo "Adapted to commonjs require: $file\n";
+        file_put_contents($file, $c);
+    }
+}
+
+
+
+if (!is_dir('cache/commonjs')) {
+    mkdir('cache/commonjs');
+    file_put_contents('cache/commonjs/.gitignore', "*\n!.gitignore\n");
+    system("git add cache/commonjs/.gitignore");
+    echo "folder \"cache/commonjs\" created\n";
+}
+
+
 
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
