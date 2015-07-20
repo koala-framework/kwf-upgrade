@@ -225,5 +225,22 @@ foreach ($assetVariables as $k=>$i) {
 file_put_contents('scss/config/_colors.scss');
 
 
+
+
+$files = array_merge(
+    glob_recursive('*.css')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+    $c = str_replace('$cssClass', '.cssClass', $c);
+    if ($c != $origC) {
+        echo "Converted \$cssClass to .cssClass scss: $file\n";
+        file_put_contents($file, $c);
+    }
+}
+
+
+
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
