@@ -157,6 +157,73 @@ if (!is_dir('cache/commonjs')) {
 }
 
 
+$files = array_merge(
+    glob_recursive('*.css')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    if (strpos($c, 'var(') !== false) {
+        $scssFile = substr($file, 0, -4).'.scss';
+        if (file_exists($scssFile)) {
+            file_put_contents($scssFile, "\n".$c, FILE_APPEND);
+            unlink($file);
+        } else {
+            rename($file, $scssFile);
+        }
+        echo "Renamed to scss to support assetVariables: $file\n";
+    }
+}
+
+$files = array_merge(
+    glob_recursive('*.scss')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    if (strpos($c, 'var(') !== false) {
+        $c = "@import \"config/colors\";\n".$c;
+        $c = preg_replace('#var\(([^\)]+)\)#', '$\1', $c);
+        echo "Converted var() to scss: $file\n";
+        file_put_contents($file, $c);
+    }
+}
+
+
+$assetVariables = array(
+    'errorBg' => '#d11313',
+    'errorBorder' => '#bb1d1d',
+    'errorText' => '#fff',
+    'successBg' => '#7db800',
+    'successBorder' => '#1e7638',
+    'successText' => '#fff',
+);
+if (file_exists('assetVariables.ini')) {
+    $ini = parse_ini_file('assetVariables.ini');
+    foreach ($ini as $k=>$i) {
+        $assetVariables[$k] = $i;
+    }
+}
+if (file_exists('config.ini')) {
+    $ini = parse_ini_file('config.ini');
+    foreach ($ini as $k=>$i) {
+        if (substr($k, 0, 15) == 'assetVariables.') {
+            $assetVariables[substr($k, 15)] = $i;
+        }
+    }
+}
+if (file_exists('themes/Theme/config.ini')) {
+    $ini = parse_ini_file('themes/Theme/config.ini');
+    foreach ($ini as $k=>$i) {
+        if (substr($k, 0, 15) == 'assetVariables.') {
+            $assetVariables[substr($k, 15)] = $i;
+        }
+    }
+}
+$c = '';
+foreach ($assetVariables as $k=>$i) {
+    $c .= "\$$k: $i;\n";
+}
+file_put_contents('scss/config/_colors.scss');
+
 
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
