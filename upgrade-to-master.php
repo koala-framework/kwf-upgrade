@@ -225,19 +225,24 @@ foreach ($assetVariables as $k=>$i) {
 file_put_contents('scss/config/_colors.scss');
 
 
-
-
 $files = array_merge(
-    glob_recursive('*.css')
+    glob_recursive('Component.printcss'),
+    glob_recursive('Master.printcss'),
+    glob_recursive('Web.printcss')
 );
 foreach ($files as $file) {
     $c = file_get_contents($file);
-    $origC = $c;
-    $c = str_replace('$cssClass', '.cssClass', $c);
-    if ($c != $origC) {
-        echo "Converted \$cssClass to .cssClass scss: $file\n";
-        file_put_contents($file, $c);
+    unlink($file);
+    $c = "\n@media print {\n$c\n}\n";
+    if (file_exists(substr($file, 0, -8).'scss')) {
+        $filename = substr($file, 0, -8).'scss';
+    } else if (file_exists(substr($file, 0, -8).'css')) {
+        $filename = substr($file, 0, -8).'css';
+    } else {
+        $filename = substr($file, 0, -8).'scss';
     }
+    file_put_contents($filename, $c, FILE_APPEND);
+    echo "Converted to media query: $file\n";
 }
 
 
