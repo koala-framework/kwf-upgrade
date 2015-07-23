@@ -189,6 +189,14 @@ foreach ($files as $file) {
 
 
 $assetVariables = array(
+    'mainColor' => '#314659',
+    'secColor' => '#1E3040',
+    'highlightedText' => '#c90000',
+    'contentBg' => '#f4f4f4',
+    'typo' => '#414742',
+    'dark' => '#000',
+    'light' => '#fff',
+    'lightGrey' => '#707070',
     'errorBg' => '#d11313',
     'errorBorder' => '#bb1d1d',
     'errorText' => '#fff',
@@ -201,6 +209,7 @@ if (file_exists('assetVariables.ini')) {
     foreach ($ini as $k=>$i) {
         $assetVariables[$k] = $i;
     }
+    unlink('assetVariables.ini');
 }
 if (file_exists('config.ini')) {
     $ini = parse_ini_file('config.ini');
@@ -209,6 +218,9 @@ if (file_exists('config.ini')) {
             $assetVariables[substr($k, 15)] = $i;
         }
     }
+    $c = file_get_contents('config.ini');
+    $c = preg_replace('#assetVariables\..*\n#', '', $c);
+    file_put_contents('config.ini', $c);
 }
 if (file_exists('themes/Theme/config.ini')) {
     $ini = parse_ini_file('themes/Theme/config.ini');
