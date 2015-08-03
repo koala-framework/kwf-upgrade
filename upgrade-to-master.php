@@ -154,6 +154,12 @@ if (!is_dir('cache/commonjs')) {
     system("git add cache/commonjs/.gitignore");
     echo "folder \"cache/commonjs\" created\n";
 }
+if (!is_dir('cache/componentassets')) {
+    mkdir('cache/componentassets');
+    file_put_contents('cache/componentassets/.gitignore', "*\n!.gitignore\n");
+    system("git add cache/componentassets/.gitignore");
+    echo "folder \"cache/componentassets\" created\n";
+}
 
 
 $files = array_merge(
