@@ -30,7 +30,6 @@ $c->extra->{'require-bower'}->jquery = "1.11.3";
 echo "Added susyone and jquery to require-bower\n";
 file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
 
-
 function glob_recursive($pattern, $flags = 0) {
     $files = glob($pattern, $flags);
     foreach (glob(dirname($pattern).'/*', GLOB_ONLYDIR|GLOB_NOSORT) as $dir) {
@@ -109,7 +108,7 @@ foreach ($files as $file) {
         $c = str_replace('Kwf.Utils.ResponsiveEl', 'responsiveEl', $c);
     }
     if (strpos($c, 'Kwf.onJElementReady') !== false || strpos($c, 'Kwf.onJElementShow') !== false || strpos($c, 'Kwf.onJElementHide') !== false || strpos($c, 'Kwf.onJElementWidthChange') !== false) {
-        $c = "var $ = require('jquery');\n".$c;
+        $c = "var $ = require('jQuery');\n".$c;
         $c = "var onReady = require('kwf/on-ready');\n".$c;
         $c = str_replace('Kwf.onJElementReady', 'onReady.onRender', $c);
         $c = str_replace('Kwf.onJElementShow', 'onReady.onShow', $c);
