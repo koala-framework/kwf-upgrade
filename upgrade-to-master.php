@@ -53,14 +53,14 @@ $files = array_merge(
 foreach ($files as $file) {
     $c = file_get_contents($file);
     $origC = $c;
-    $c = str_replace('webStandard', 'kwfup-webStandard', $c);
-    $c = str_replace('webForm', 'kwfup-webForm', $c);
-    $c = str_replace('webListNone', 'kwfup-webListNone', $c);
-    $c = str_replace('webMenu', 'kwfup-webMenu', $c);
-    $c = str_replace('kwcFormError', 'kwfup-kwcFormError', $c);
-    $c = str_replace('printHidden', 'kwfup-printHidden', $c);
+    $c = str_replace('webStandard', 'kwfUp-webStandard', $c);
+    $c = str_replace('webForm', 'kwfUp-webForm', $c);
+    $c = str_replace('webListNone', 'kwfUp-webListNone', $c);
+    $c = str_replace('webMenu', 'kwfUp-webMenu', $c);
+    $c = str_replace('kwcFormError', 'kwfUp-kwcFormError', $c);
+    $c = str_replace('printHidden', 'kwfUp-printHidden', $c);
     if ($c != $origC) {
-        echo "added kwfup- class prefix in $file\n";
+        echo "added kwfUp- class prefix in $file\n";
         file_put_contents($file, $c);
     }
 }
@@ -73,9 +73,9 @@ $files = array_merge(
 foreach ($files as $file) {
     $c = file_get_contents($file);
     $origC = $c;
-    $c = str_replace('.frontend', '.kwfup-frontend', $c);
+    $c = str_replace('.frontend', '.kwfUp-frontend', $c);
     if ($c != $origC) {
-        echo "added kwfup- class prefix in $file\n";
+        echo "added kwfUp- class prefix in $file\n";
         file_put_contents($file, $c);
     }
 }
@@ -87,11 +87,11 @@ $files = array_merge(
 foreach ($files as $file) {
     $c = file_get_contents($file);
     $origC = $c;
-    $c = str_replace('class="clear"', 'class="kwfup-clear"', $c);
-    $c = str_replace('class="left"', 'class="kwfup-left"', $c);
-    $c = str_replace('class="right"', 'class="kwfup-right"', $c);
+    $c = str_replace('class="clear"', 'class="kwfUp-clear"', $c);
+    $c = str_replace('class="left"', 'class="kwfUp-left"', $c);
+    $c = str_replace('class="right"', 'class="kwfUp-right"', $c);
     if ($c != $origC) {
-        echo "added kwfup- class prefix in $file\n";
+        echo "added kwfUp- class prefix in $file\n";
         file_put_contents($file, $c);
     }
 }
@@ -229,12 +229,89 @@ if (file_exists('themes/Theme/config.ini')) {
             $assetVariables[substr($k, 15)] = $i;
         }
     }
+    $c = file_get_contents('themes/Theme/config.ini');
+    $c = preg_replace("#assetVariables\..*\n#", '', $c);
+    file_put_contents('themes/Theme/config.ini', $c);
 }
 $c = '';
 foreach ($assetVariables as $k=>$i) {
     $c .= "\$$k: $i;\n";
 }
-file_put_contents('scss/config/_colors.scss');
+file_put_contents('scss/config/_colors.scss', $c);
+echo "generated scss/config/_colors.scss\n";
+
+
+
+
+$files = array_merge(
+    glob_recursive('*.css')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+    $c = str_replace('.$cssClass', '.cssClass', $c);
+    if ($c != $origC) {
+        echo "Converted .\$cssClass to .cssClass: $file\n";
+        file_put_contents($file, $c);
+    }
+}
+
+
+
+$files = array_merge(
+    glob_recursive('*.css', '*.scss', '*.js')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+    $c = str_replace('.cssClass', '.kwcClass', $c);
+    if ($c != $origC) {
+        echo "Converted .cssClass to .kwcClass: $file\n";
+        file_put_contents($file, $c);
+    }
+}
+
+$files = array_merge(
+    glob_recursive('*.tpl')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+    $c = str_replace('<?=$this->cssClass?>', '<?=$this->rootElementClass?>', $c);
+    $c = str_replace('<?=$this->cssClass;?>', '<?=$this->rootElementClass?>', $c);
+    if ($c != $origC) {
+        echo "Converted cssClass to rootElementClass: $file\n";
+        file_put_contents($file, $c);
+    }
+}
+
+$files = array_merge(
+    glob_recursive('*.twig')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+    $c = str_replace('{{ cssClass }}', '{{ rootElementClass }}', $c);
+    if ($c != $origC) {
+        echo "Converted cssClass to rootElementClass: $file\n";
+        file_put_contents($file, $c);
+    }
+}
+
+$files = array_merge(
+    glob_recursive('Component.php')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+    $c = str_replace('[\'cssClass\']', '[\'rootElementClass\']', $c);
+    if ($c != $origC) {
+        echo "Converted ['cssClass'] to ['rootElementClass']: $file\n";
+        file_put_contents($file, $c);
+    }
+}
+
+
 
 
 $files = array_merge(
