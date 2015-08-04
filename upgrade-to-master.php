@@ -264,7 +264,9 @@ foreach ($files as $file) {
 
 
 $files = array_merge(
-    glob_recursive('*.css', '*.scss', '*.js')
+    glob_recursive('*.css'),
+    glob_recursive('*.scss'),
+    glob_recursive('*.js')
 );
 foreach ($files as $file) {
     $c = file_get_contents($file);
