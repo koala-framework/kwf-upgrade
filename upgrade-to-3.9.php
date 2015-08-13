@@ -98,6 +98,17 @@ if (file_exists("trl.xml")) {
         echo "no vivid-planet/vkwf existing. Didn't add trl folder to gitignore\n";
     }
 }
+//Remove KwfTrlAdmin dependency because it doesn't exist anymore
+if (file_exists('dependencies.ini')) {
+    $contentLines = explode("\n", file_get_contents('dependencies.ini'));
+    $lines = array();
+    foreach ($contentLines as $contentLine) {
+        if (strpos($contentLine, 'KwfTrlAdmin') === false) {
+            $lines[] = $contentLine;
+        }
+    }
+    file_put_contents('dependencies.ini', implode("\n", $lines));
+}
 
 
 //---------------------------------------------------------
