@@ -122,6 +122,11 @@ foreach ($files as $file) {
         $c = str_replace('Kwf.onElementHide', 'onReady.onHide', $c);
         $c = str_replace('Kwf.onElementWidthChange', 'onReady.onResize', $c);
     }
+    if (strpos($c, 'Kwf.onContentReady') !== false || strpos($c, 'Kwf.callOnContentReady') !== false) {
+        $c = "var onReady = require('kwf/on-ready');\n".$c;
+        $c = str_replace('Kwf.onContentReady', 'onReady.onContentReady', $c);
+        $c = str_replace('Kwf.callOnContentReady', 'onReady.callOnContentReady', $c);
+    }
     if (strpos($c, 'Kwf.onComponentEvent') !== false || strpos($c, 'Kwf.fireComponentEvent') !== false) {
         $c = "var componentEvent = require('kwf/component-event');\n".$c;
         $c = str_replace('Kwf.onComponentEvent', 'componentEvent.on', $c);
@@ -138,6 +143,15 @@ foreach ($files as $file) {
     if (strpos($c, 'Kwf.log(') !== false) {
         $c = "var kwfLog = require('kwf/log');\n".$c;
         $c = str_replace('Kwf.log(', 'kwfLog(', $c);
+    }
+    if (strpos($c, 'Ext2.namespace(') !== false || strpos($c, 'Ext2.ns(') !== false) {
+        $c = "var kwfNs = require('kwf/namespace');\n".$c;
+        $c = str_replace('Ext2.namespace(', 'kwfNs(', $c);
+        $c = str_replace('Ext2.ns(', 'kwfNs(', $c);
+    }
+    if (strpos($c, 'Ext2.extend(') !== false) {
+        $c = "var kwfExtend = require('kwf/extend');\n".$c;
+        $c = str_replace('Ext2.extend(', 'kwfExtend(', $c);
     }
 
     if ($c != $origC) {
@@ -345,3 +359,4 @@ foreach ($files as $file) {
 
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
+
