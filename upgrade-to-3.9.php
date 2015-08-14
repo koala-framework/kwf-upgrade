@@ -1,5 +1,7 @@
 #!/usr/bin/php
 <?php
+require __DIR__.'/util/globrecursive.php';
+
 if (is_file('vkwf_branch') || is_file('kwf_branch')) {
     die("This script will update from 3.8, update to 3.8 first.\n");
 }
@@ -29,17 +31,6 @@ require __DIR__ . '/vendor/autoload.php';
 require __DIR__.'/upgrade-to-3.9/PhpParserVisitor.php';
 
 echo "Parsing code to check for trl in getSettings\n";
-function glob_recursive($pattern, $flags = 0) {
-    $files = glob($pattern, $flags);
-    foreach (glob(dirname($pattern).'/*', GLOB_ONLYDIR|GLOB_NOSORT) as $dir) {
-        if (dirname($dir) == './kwf-lib' || $dir == './kwf-lib') continue;
-        if (dirname($dir) == './vkwf-lib' || $dir == './vkwf-lib') continue;
-        if (dirname($dir) == './library' || $dir == './library') continue;
-        if (dirname($dir) == './vendor' || $dir == './vendor') continue;
-        $files = array_merge($files, glob_recursive($dir.'/'.basename($pattern), $flags));
-    }
-    return $files;
-}
 
 $parser = new \PhpParser\Parser(new \PhpParser\Lexer);
 $traverser = new \PhpParser\NodeTraverser;

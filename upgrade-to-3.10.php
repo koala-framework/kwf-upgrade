@@ -1,5 +1,7 @@
 #!/usr/bin/php
 <?php
+require __DIR__.'/util/globrecursive.php';
+
 if (is_file('vkwf_branch') || is_file('kwf_branch')) {
     die("This script will update from 3.9, update to 3.9 first.\n");
 }

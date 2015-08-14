@@ -1,22 +1,13 @@
 #!/usr/bin/php
 <?php
+require __DIR__.'/util/globrecursive.php';
+
 $file = is_file('vkwf_branch') ? 'vkwf_branch' : 'kwf_branch';
 if (!file_exists($file)) die("Execute this script in app root.\n");
 if (trim(file_get_contents($file)) != '3.5') die("This script will update from 3.5, update to 3.5 first.\n");
 
 file_put_contents($file, "3.6\n");
 echo "Changed $file to 3.6\n";
-
-function glob_recursive($pattern, $flags = 0) {
-    $files = glob($pattern, $flags);
-    foreach (glob(dirname($pattern).'/*', GLOB_ONLYDIR|GLOB_NOSORT) as $dir) {
-        if (dirname($dir) == './kwf-lib' || $dir == './kwf-lib') continue;
-        if (dirname($dir) == './vkwf-lib' || $dir == './vkwf-lib') continue;
-        if (dirname($dir) == './library' || $dir == './library') continue;
-        $files = array_merge($files, glob_recursive($dir.'/'.basename($pattern), $flags));
-    }
-    return $files;
-}
 
 function replaceFiles($files, $from, $to) {
     foreach ($files as $f) {

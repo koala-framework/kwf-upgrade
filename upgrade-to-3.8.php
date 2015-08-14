@@ -1,5 +1,7 @@
 #!/usr/bin/php
 <?php
+require __DIR__.'/util/globrecursive.php';
+
 $file = is_file('vkwf_branch') ? 'vkwf_branch' : 'kwf_branch';
 if (!file_exists($file)) die("Execute this script in app root.\n");
 if (trim(file_get_contents($file)) != '3.7') die("This script will update from 3.7, update to 3.7 first.\n");
@@ -55,18 +57,6 @@ function deleteCacheFolder($path)
         }
     }
     rmdir($path);
-}
-
-function glob_recursive($pattern, $flags = 0) {
-    $files = glob($pattern, $flags);
-    foreach (glob(dirname($pattern).'/*', GLOB_ONLYDIR|GLOB_NOSORT) as $dir) {
-        if (dirname($dir) == './kwf-lib' || $dir == './kwf-lib') continue;
-        if (dirname($dir) == './vkwf-lib' || $dir == './vkwf-lib') continue;
-        if (dirname($dir) == './library' || $dir == './library') continue;
-        if (dirname($dir) == './vendor' || $dir == './vendor') continue;
-        $files = array_merge($files, glob_recursive($dir.'/'.basename($pattern), $flags));
-    }
-    return $files;
 }
 
 if (!file_exists('scss')) {

@@ -1,5 +1,7 @@
 #!/usr/bin/php
 <?php
+require __DIR__.'/util/globrecursive.php';
+
 if (is_file('vkwf_branch') || is_file('kwf_branch')) {
     die("This script will update from 3.9, update to 3.9 first.\n");
 }
@@ -29,18 +31,6 @@ $c->extra->{'require-bower'}->susy = "vivid-planet/susy#8161395e8ad5d75a0a15a035
 $c->extra->{'require-bower'}->jquery = "1.11.3";
 echo "Added susyone and jquery to require-bower\n";
 file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
-
-function glob_recursive($pattern, $flags = 0) {
-    $files = glob($pattern, $flags);
-    foreach (glob(dirname($pattern).'/*', GLOB_ONLYDIR|GLOB_NOSORT) as $dir) {
-        if (dirname($dir) == './kwf-lib' || $dir == './kwf-lib') continue;
-        if (dirname($dir) == './vkwf-lib' || $dir == './vkwf-lib') continue;
-        if (dirname($dir) == './library' || $dir == './library') continue;
-        if (dirname($dir) == './vendor' || $dir == './vendor') continue;
-        $files = array_merge($files, glob_recursive($dir.'/'.basename($pattern), $flags));
-    }
-    return $files;
-}
 
 $files = array_merge(
     glob_recursive('*.tpl'),
