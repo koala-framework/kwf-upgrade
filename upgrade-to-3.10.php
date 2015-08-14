@@ -22,6 +22,27 @@ if (!$changed) {
 }
 file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
 
+$files = glob_recursive('Master.tpl');
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+    $c = str_replace("<html", '<html lang="<?=$this->pageLanguage?>"', $c);
+    if ($c != $origC) {
+        echo "Added lang attribute to <html: $file\n";
+        file_put_contents($c, $file);
+    }
+}
+
+$files = glob_recursive('Master.twig');
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+    $c = str_replace("<html", '<html lang="{{ pageLanguage }}"', $c);
+    if ($c != $origC) {
+        echo "Added lang attribute to <html: $file\n";
+        file_put_contents($file, $c);
+    }
+}
 
 
 
