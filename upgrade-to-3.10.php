@@ -29,7 +29,14 @@ foreach ($files as $file) {
     $c = str_replace("<html", '<html lang="<?=$this->pageLanguage?>"', $c);
     if ($c != $origC) {
         echo "Added lang attribute to <html: $file\n";
-        file_put_contents($c, $file);
+        file_put_contents($file, $c);
+    }
+    $origC = $c;
+    $search = '<?=$this->doctype('."'".'XHTML1_STRICT'."'".');?>';
+    $c = str_replace($search, '<!DOCTYPE html>', $c);
+    if ($c != $origC) {
+        echo "Changed doctype to html5 in file: $file\n";
+        file_put_contents($file, $c);
     }
 }
 
@@ -40,6 +47,12 @@ foreach ($files as $file) {
     $c = str_replace("<html", '<html lang="{{ pageLanguage }}"', $c);
     if ($c != $origC) {
         echo "Added lang attribute to <html: $file\n";
+        file_put_contents($file, $c);
+    }
+    $origC = $c;
+    $c = str_replace('<?=$this->doctype(\'XHTML1_STRICT\');?>', '<!DOCTYPE html>', $c);
+    if ($c != $origC) {
+        echo "Changed doctype to html5 in file: $file\n";
         file_put_contents($file, $c);
     }
 }
