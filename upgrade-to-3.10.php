@@ -38,6 +38,13 @@ foreach ($files as $file) {
         echo "Changed doctype to html5 in file: $file\n";
         file_put_contents($file, $c);
     }
+    $origC = $c;
+    $c = str_replace(' xmlns="http://www.w3.org/1999/xhtml"', '', $c);
+    if ($c != $origC) {
+        echo "Removed xmlns in file: $file\n";
+        file_put_contents($file, $c);
+    }
+
 }
 
 $files = glob_recursive('Master.twig');
@@ -53,6 +60,12 @@ foreach ($files as $file) {
     $c = str_replace('<?=$this->doctype(\'XHTML1_STRICT\');?>', '<!DOCTYPE html>', $c);
     if ($c != $origC) {
         echo "Changed doctype to html5 in file: $file\n";
+        file_put_contents($file, $c);
+    }
+    $origC = $c;
+    $c = str_replace(' xmlns="http://www.w3.org/1999/xhtml"', '', $c);
+    if ($c != $origC) {
+        echo "Removed xmlns in file: $file\n";
         file_put_contents($file, $c);
     }
 }
