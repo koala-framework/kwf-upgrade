@@ -74,8 +74,16 @@ $c = file_get_contents('bootstrap.php');
 $origC = $c;
 $c = str_replace("Kwf_Util_Https::ensureHttps();\n", '', $c);
 if ($c != $origC) {
-    echo "removed Kwf_Util_Https::ensureHttps: $file\n";
-    file_put_contents($file, $c);
+    echo "removed Kwf_Util_Https::ensureHttps: bootstrap.php\n";
+    file_put_contents('bootstrap.php', $c);
+}
+
+$c = file_get_contents('config.ini');
+$origC = $c;
+$c = preg_replace("# *processControl\..*\.cmd\s*=\s*newsletter start *\n#", '', $c);
+if ($c != $origC) {
+    echo "removed processControl newsletter start: config.ini\n";
+    file_put_contents('config.ini', $c);
 }
 
 
