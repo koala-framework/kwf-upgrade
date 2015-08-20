@@ -86,7 +86,23 @@ if ($c != $origC) {
     file_put_contents('config.ini', $c);
 }
 
-
+//try common location for component where boxes are created
+$files = array(
+    'themes/Theme/Component.php',
+    'components/Root/Component.php',
+    'components/Root/Domain/Component.php',
+    'components/Root/Master/Component.php',
+);
+foreach ($files as $file) {
+    if (!file_exists($file)) continue;
+    $c = file_get_contents($file);
+    $origC = $c;
+    $c = preg_replace("#\\\$ret\['generators'\]\['openGraph'\].*?\);\s*#s", '', $c);
+    if ($c != $origC) {
+        echo "removed openGraph box: $file\n";
+        file_put_contents($file, $c);
+    }
+}
 
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
