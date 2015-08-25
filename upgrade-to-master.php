@@ -346,6 +346,51 @@ foreach ($files as $file) {
 }
 
 
+$files = array_merge(
+    glob_recursive('Component.php')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+    $c = str_replace('ModernizrTouch', 'ModernizrTouchevents', $c);
+    if ($c != $origC) {
+        echo " [modernizr v3] touch modernizr test to touchevents: $file\n";
+        file_put_contents($file, $c);
+    }
+}
+$files = array_merge(
+    glob_recursive('Component.css'),
+    glob_recursive('Component.scss'),
+    glob_recursive('Master.scss'),
+    glob_recursive('Web.scss')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+    $c = str_replace('html.touch', 'html.touchevents', $c);
+    $c = str_replace('html.no-touch', 'html.no-touchevents', $c);
+    if ($c != $origC) {
+        echo " [modernizr v3] touch modernizr test to touchevents: $file\n";
+        file_put_contents($file, $c);
+    }
+}
+$files = array_merge(
+    glob_recursive('Component.js'),
+    glob_recursive('Master.js'),
+    glob_recursive('Web.js')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+    $c = str_replace("'touch'", "'touchevents'", $c);
+    $c = str_replace("'no-touch'", "'no-touchevents'", $c);
+    $c = str_replace("Modernizr.touch", "Modernizr.touchevents", $c);
+    if ($c != $origC) {
+        echo " [modernizr v3] touch modernizr test to touchevents: $file\n";
+        file_put_contents($file, $c);
+    }
+}
+
 
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
