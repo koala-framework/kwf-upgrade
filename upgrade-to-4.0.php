@@ -33,6 +33,7 @@ echo "Added susyone and jquery to require-bower\n";
 file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
 
 $files = array_merge(
+    glob_recursive('*.php'),
     glob_recursive('*.tpl'),
     glob_recursive('*.twig'),
     glob_recursive('*.css'),
