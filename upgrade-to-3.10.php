@@ -104,5 +104,12 @@ foreach ($files as $file) {
     }
 }
 
+if (!is_dir('cache/simple')) {
+    mkdir('cache/simple');
+    file_put_contents('cache/simple/.gitignore', "*\n!.gitignore\n");
+    system("git add cache/simple/.gitignore");
+    echo "folder \"cache/simple\" created\n";
+}
+
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
