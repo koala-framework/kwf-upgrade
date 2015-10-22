@@ -22,6 +22,19 @@ if (!$changed) {
 }
 file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
 
+$files = glob_recursive('Component.php');
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+    $c = str_replace("public function getTemplateVars()", 'public function getTemplateVars(Kwf_Component_Renderer_Abstract $renderer)', $c);
+    $c = str_replace('public function getTemplateVars(Kwf_Component_Renderer_Abstract $renderer = null)', 'public function getTemplateVars(Kwf_Component_Renderer_Abstract $renderer)', $c);
+    $c = str_replace("::getTemplateVars()", '::getTemplateVars($renderer)', $c);
+    if ($c != $origC) {
+        echo "Added \$renderer in getTemplateVars in file: $file\n";
+        file_put_contents($file, $c);
+    }
+    $origC = $c;
+}
 
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
