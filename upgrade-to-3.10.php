@@ -75,17 +75,9 @@ foreach ($files as $file) {
     $c = file_get_contents($file);
     $origC = $c;
     $c = str_replace("public function getTemplateVars()", 'public function getTemplateVars(Kwf_Component_Renderer_Abstract $renderer = null)', $c);
-    if ($c != $origC) {
-        echo "Added \$renderer in public function getTemplateVars in file: $file\n";
-        file_put_contents($file, $c);
-    }
-    $origC = $c;
-
-    $c = file_get_contents($file);
-    $origC = $c;
     $c = str_replace("::getTemplateVars()", '::getTemplateVars($renderer)', $c);
     if ($c != $origC) {
-        echo "Added \$renderer in parent getTemplateVars in file: $file\n";
+        echo "Added \$renderer in getTemplateVars in file: $file\n";
         file_put_contents($file, $c);
     }
     $origC = $c;
