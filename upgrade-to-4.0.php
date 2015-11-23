@@ -27,7 +27,7 @@ if (!isset($c->extra)) {
 if (!isset($c->extra->{'require-bower'})) {
     $c->extra->{'require-bower'} = (object)array();
 }
-$c->extra->{'require-bower'}->susy = "vivid-planet/susy#8161395e8ad5d75a0a15a0355feb9853ebaad369";
+$c->extra->{'require-bower'}->susy = "vivid-planet/susy#c1b4e3abd44197b39b3410f024eefbb18237d8eb";
 $c->extra->{'require-bower'}->jquery = "1.11.3";
 echo "Added susyone and jquery to require-bower\n";
 file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
