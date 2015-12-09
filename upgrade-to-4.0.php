@@ -3,7 +3,7 @@
 require __DIR__.'/util/globrecursive.php';
 
 if (is_file('vkwf_branch') || is_file('kwf_branch')) {
-    die("This script will update from 3.10, update to 3.10 first.\n");
+    die("This script will update from 3.11, update to 3.11 first.\n");
 }
 if (!is_file('composer.json')) {
     die("composer.json not found.\n");
@@ -12,13 +12,13 @@ if (!is_file('composer.json')) {
 $changed = false;
 $c = json_decode(file_get_contents('composer.json'));
 foreach ($c->require as $packageName=>$packageVersion) {
-    if (substr($packageVersion, 0, 5) == "3.10.") {
+    if (substr($packageVersion, 0, 5) == "3.11.") {
         $c->require->$packageName = '4.0.x-dev';
         $changed = true;
     }
 }
 if (!$changed) {
-    die("This script will update from 3.10, update to 3.10 first.\n");
+    die("This script will update from 3.11, update to 3.11 first.\n");
 }
 
 if (!isset($c->extra)) {
