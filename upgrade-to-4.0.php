@@ -184,6 +184,19 @@ foreach ($files as $file) {
     }
 }
 
+
+$files = array_merge(
+    glob_recursive('Web.css'),
+    glob_recursive('Master.css')
+);
+foreach ($files as $file) {
+    $scssFile = substr($file, 0, -4).'.scss';
+    if (!file_exists($scssFile)) {
+        rename($file, $scssFile);
+    }
+    echo "Renamed to scss: $file\n";
+}
+
 $files = array_merge(
     glob_recursive('*.scss')
 );
@@ -408,6 +421,20 @@ foreach ($files as $f) {
         file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
 
     }
+}
+
+
+$files = array_merge(
+    glob_recursive('Web.scss')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $c .= "\n.kwfUp-webForm {\n".
+        "    @include form-default-styles;\n".
+        "}\n";
+    $c = "@import \"form/default-styles\";\n$c";
+    file_put_contents($file, $c);
+    echo "added form-default-styles to $file\n";
 }
 
 
