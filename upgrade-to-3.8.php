@@ -1,6 +1,7 @@
 #!/usr/bin/php
 <?php
 require __DIR__.'/util/globrecursive.php';
+require __DIR__.'/util/deleteCacheFolder.php';
 
 $file = is_file('vkwf_branch') ? 'vkwf_branch' : 'kwf_branch';
 if (!file_exists($file)) die("Execute this script in app root.\n");
@@ -34,29 +35,6 @@ if (!file_exists('composer.json')) {
     exec("git add composer.json");
     file_put_contents('composer.lock', '');
     exec("git add composer.lock");
-}
-
-function deleteCacheFolder($path)
-{
-    if (!file_exists($path)) return;
-    system("git rm $path/.gitignore");
-    clearstatcache();
-    if (!file_exists($path)) return;
-
-    $it = new RecursiveIteratorIterator(
-        new RecursiveDirectoryIterator($path),
-        RecursiveIteratorIterator::CHILD_FIRST
-    );
-    foreach ($it as $file) {
-        if (in_array($file->getBasename(), array('.', '..'))) {
-            continue;
-        } elseif ($file->isDir()) {
-            rmdir($file->getPathname());
-        } elseif ($file->isFile() || $file->isLink()) {
-            unlink($file->getPathname());
-        }
-    }
-    rmdir($path);
 }
 
 if (!file_exists('scss')) {

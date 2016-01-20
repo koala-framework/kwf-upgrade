@@ -1,6 +1,7 @@
 #!/usr/bin/php
 <?php
 require __DIR__.'/util/globrecursive.php';
+require __DIR__.'/util/deleteCacheFolder.php';
 
 if (is_file('vkwf_branch') || is_file('kwf_branch')) {
     die("This script will update from 3.11, update to 3.11 first.\n");
