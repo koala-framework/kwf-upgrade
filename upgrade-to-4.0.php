@@ -17,6 +17,9 @@ foreach ($c->require as $packageName=>$packageVersion) {
         $c->require->$packageName = '4.0.x-dev';
         $changed = true;
     }
+    if ($packageName == 'koala-framework/kwf-owlcarousel' && (int)substr($packageVersion, 0, 1) < 2) {
+        $c->require->$packageName = '2.0.x-dev';
+    }
 }
 if (!$changed) {
     die("This script will update from 3.11, update to 3.11 first.\n");
