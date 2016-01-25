@@ -410,7 +410,7 @@ foreach ($files as $file) {
 }
 
 $files = glob_recursive('Component.php');
-foreach ($files as $f) {
+foreach ($files as $file) {
     $c = file_get_contents($file);
     $origC = $c;
     $c = str_replace('Kwc_Legacy_List_Fade_Component', 'Kwc_LegacyListFade_Component', $c);
@@ -424,6 +424,28 @@ foreach ($files as $f) {
         echo "Added koala-framework/kwc-legacy-list-fade to require composer.json\n";
         file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
 
+    }
+}
+
+// Rename components from packages to new package-naming-convention
+$files = glob_recursive('*.php');
+$files = array_merge($files, glob_recursive('config.ini'));
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+
+    // Owlcarousel: https://github.com/koala-framework/kwf-owlcarousel
+    $c = str_replace('Kwf_Owlcarousel_Kwc_Carousel_', 'Owlcarousel_Kwc_Carousel_', $c);
+    $c = str_replace('Kwf_Owlcarousel_Kwc_Thumbnails_', 'Owlcarousel_Kwc_Thumbnails_', $c);
+
+    // Parallax: https://github.com/koala-framework/kwc-parallax
+    $c = str_replace('Kwc_Parallax_ParallaxImage_', 'Parallax_Kwc_ParallaxImage_', $c);
+
+    // TextImageTeaser: https://github.com/koala-framework/kwc-text-image-teaser
+    $c = str_replace('Kwc_TextImageTeaser_', 'TextImageTeaser_Kwc_Teaser_', $c);
+    if ($c != $origC) {
+        echo "renamed $origC to $c: $file\n";
+        file_put_contents($file, $c);
     }
 }
 
