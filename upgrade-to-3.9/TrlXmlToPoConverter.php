@@ -31,6 +31,10 @@ class TrlXmlToPoConverter
     public function convertToPo($output)
     {
         $this->_poContent = array();
+        $this->_poContent[] = 'msgid ""';
+        $this->_poContent[] = 'msgstr ""';
+        $this->_poContent[] = '"Content-Type: text/plain; charset=UTF-8\n"';
+        $this->_poContent[] = '';
         foreach ($this->_xmlDocument->text as $trl) {
             if ($trl->context) {
                 $this->_poContent[] = 'msgctxt "'.$trl->context.'"';
