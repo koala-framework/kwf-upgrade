@@ -148,6 +148,10 @@ foreach ($files as $file) {
         $c = "var kwfExtend = require('kwf/extend');\n".$c;
         $c = str_replace('Ext2.extend(', 'kwfExtend(', $c);
     }
+    if (strpos($c, 'Kwf.GoogleMap.Map') !== false) {
+        $c = "var GoogleMap = require('kwf/google-map/map');\n".$c;
+        $c = str_replace('Kwf.GoogleMap.Map', 'GoogleMap', $c);
+    }
 
     if ($c != $origC) {
         echo "Adapted to commonjs require: $file\n";
@@ -413,8 +417,8 @@ $files = glob_recursive('Component.php');
 foreach ($files as $file) {
     $c = file_get_contents($file);
     $origC = $c;
-    $c = str_replace('Kwc_Legacy_List_Fade_Component', 'Kwc_LegacyListFade_Component', $c);
-    $c = str_replace('Kwc_Composite_Fade_Component', 'Kwc_LegacyListFade_CompositeFade_Component', $c);
+    $c = str_replace('Kwc_Legacy_List_Fade_Component', 'LegacyListFade_Kwc_List_Component', $c);
+    $c = str_replace('Kwc_Composite_Fade_Component', 'LegacyListFade_Kwc_List_CompositeFade_Component', $c);
     if ($c != $origC) {
         echo "renamed to Kwc_LegacyListFade: $file\n";
         file_put_contents($file, $c);
