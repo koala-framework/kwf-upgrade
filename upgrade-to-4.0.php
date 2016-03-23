@@ -417,8 +417,8 @@ $files = glob_recursive('Component.php');
 foreach ($files as $file) {
     $c = file_get_contents($file);
     $origC = $c;
-    $c = str_replace('Kwc_Legacy_List_Fade_Component', 'LegacyListFade_Kwc_List_Component', $c);
-    $c = str_replace('Kwc_Composite_Fade_Component', 'LegacyListFade_Kwc_List_CompositeFade_Component', $c);
+    $c = str_replace('Kwc_Legacy_List_Fade_', 'LegacyListFade_Kwc_List_', $c);
+    $c = str_replace('Kwc_Composite_Fade_', 'LegacyListFade_Kwc_List_CompositeFade_', $c);
     if ($c != $origC) {
         echo "renamed to Kwc_LegacyListFade: $file\n";
         file_put_contents($file, $c);
