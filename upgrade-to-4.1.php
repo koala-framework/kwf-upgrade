@@ -52,6 +52,43 @@ foreach ($files as $file) {
     }
 }
 
+// Poi-Tools Package
+$usesPoiTools = false;
+$files = array_merge(
+    glob_recursive('*.php'),
+    glob_recursive('*.ini')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+    $c = str_replace('Vkwf_Poi_Url', 'PoiTools_Url', $c);
+    $c = str_replace('Vkwf_Poi_Model', 'PoiTools_Model', $c);
+    $c = str_replace('Vkwc_Poi_LinkTag', 'PoiTools_Kwc_LinkTag', $c);
+    $c = str_replace('Vkwc_Poi_Model', 'PoiTools_Kwc_Model', $c);
+    $c = str_replace('Vkwc_Poi_Statistics', 'PoiTools_Kwc_Statistics', $c);
+    if ($c != $origC) {
+        $usesPoiTools = true;
+        echo "Change poi-tools classes in $file\n";
+        file_put_contents($file, $c);
+    }
+}
+
+if ($usesPoiTools) {
+    $c = json_decode(file_get_contents('composer.json'));
+    $updateComposerJson = true;
+    foreach ($c->require as $packageName=>$packageVersion) {
+        if ($packageName == "vivid-planet/poi-tools") {
+            $updateComposerJson = false;
+        }
+    }
+    if ($updateComposerJson) {
+        $c->require->{'vivid-planet/poi-tools'} = "1.0.x-dev";
+        echo "Added vivid-planet/poi-tools to require composer.json\n";
+        file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
+    }
+}
+
+
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
 
