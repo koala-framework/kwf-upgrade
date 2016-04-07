@@ -87,7 +87,6 @@ if ($usesPoiTools) {
         file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
     }
 }
-
 $c = file_get_contents('config.ini');
 $origC = $c;
 $c = str_replace('ccVersion', 'poi.ccVersion', $c);
@@ -96,6 +95,40 @@ if ($c != $origC) {
     echo "replace ccVersion with poi.ccVersion: config.ini\n";
     file_put_contents('config.ini', $c);
 }
+
+// Poi-Shop Package
+$usesPoiShop = false;
+$files = array_merge(
+    glob_recursive('*.php'),
+    glob_recursive('*.ini')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+    $c = str_replace('Vkwf_Poi_AutoZ', 'PoiShop_AutoZ', $c);
+    $c = str_replace('Vkwc_Poi_EShop', 'PoiShop_Kwc_EShop', $c);
+    $c = str_replace('Vkwc_Poi_Accessories', 'Vkwc_Poi_Accessories', $c);
+    if ($c != $origC) {
+        $usesPoiShop = true;
+        echo "Change poi-shop classes in $file\n";
+        file_put_contents($file, $c);
+    }
+}
+if ($usesPoiShop) {
+    $c = json_decode(file_get_contents('composer.json'));
+    $updateComposerJson = true;
+    foreach ($c->require as $packageName=>$packageVersion) {
+        if ($packageName == "vivid-planet/poi-shop") {
+            $updateComposerJson = false;
+        }
+    }
+    if ($updateComposerJson) {
+        $c->require->{'vivid-planet/poi-shop'} = "1.0.x-dev";
+        echo "Added vivid-planet/poi-shop to require composer.json\n";
+        file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
+    }
+}
+
 
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
