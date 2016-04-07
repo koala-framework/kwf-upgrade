@@ -107,7 +107,7 @@ foreach ($files as $file) {
     $origC = $c;
     $c = str_replace('Vkwf_Poi_AutoZ', 'PoiShop_AutoZ', $c);
     $c = str_replace('Vkwc_Poi_EShop', 'PoiShop_Kwc_EShop', $c);
-    $c = str_replace('Vkwc_Poi_Accessories', 'Vkwc_Poi_Accessories', $c);
+    $c = str_replace('Vkwc_Poi_Accessories', 'PoiShop_Kwc_Accessories', $c);
     if ($c != $origC) {
         $usesPoiShop = true;
         echo "Change poi-shop classes in $file\n";
