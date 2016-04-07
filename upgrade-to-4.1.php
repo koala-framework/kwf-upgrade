@@ -88,6 +88,14 @@ if ($usesPoiTools) {
     }
 }
 
+$c = file_get_contents('config.ini');
+$origC = $c;
+$c = str_replace('ccVersion', 'poi.ccVersion', $c);
+$c = str_replace('poi.poi.ccVersion', 'poi.ccVersion', $c);
+if ($c != $origC) {
+    echo "replace ccVersion with poi.ccVersion: config.ini\n";
+    file_put_contents('config.ini', $c);
+}
 
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
