@@ -66,6 +66,7 @@ foreach ($files as $file) {
     $c = str_replace('Vkwc_Poi_LinkTag', 'PoiTools_Kwc_LinkTag', $c);
     $c = str_replace('Vkwc_Poi_Model', 'PoiTools_Kwc_Model', $c);
     $c = str_replace('Vkwc_Poi_Statistics', 'PoiTools_Kwc_Statistics', $c);
+    $c = str_replace('Vkwc_Poi_CarConfigurator', 'PoiTools_Kwc_CarConfigurator', $c);
     if ($c != $origC) {
         $usesPoiTools = true;
         echo "Change poi-tools classes in $file\n";
