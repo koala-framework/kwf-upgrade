@@ -130,6 +130,17 @@ if ($usesPoiShop) {
     }
 }
 
+// PoiTools_Url::getInstance()
+foreach (glob_recursive('*.php') as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+    $c = str_replace('PoiTools_Url::', 'PoiTools_Url::getInstance()->', $c);
+    $c = str_replace('PoiTools_Url::getInstance()->getInstance()->', 'PoiTools_Url::getInstance()->', $c);
+    if ($c != $origC) {
+        echo "Call PoiTools_Url via getInstance $file\n";
+        file_put_contents($file, $c);
+    }
+}
 
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
