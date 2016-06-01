@@ -211,6 +211,7 @@ $files = array_merge(
 foreach ($files as $file) {
     $c = file_get_contents($file);
     if (strpos($c, 'var(') !== false) {
+        $c = str_replace('.$cssClass', '.cssClass', $c);
         $c = "@import \"config/colors\";\n".$c;
         $c = preg_replace('#var\(([^\)]+)\)#', '$\1', $c);
         echo "Converted var() to scss: $file\n";
