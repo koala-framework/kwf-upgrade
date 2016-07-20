@@ -21,6 +21,17 @@ if (!$changed) {
     die("This script will update from 4.1, update to 4.1 first.\n");
 }
 
+echo "Replacing short-open-tags with <?php tags...\n";
+$files = array_merge(
+    glob_recursive('*.php'),
+    glob_recursive('*.tpl')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $c = preg_replace('#<\?(?!php|=)#', '<?php ', $c);
+    file_put_contents($file, $c);
+}
+
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
 
