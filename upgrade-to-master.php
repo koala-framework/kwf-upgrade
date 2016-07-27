@@ -28,7 +28,7 @@ $files = array_merge(
 );
 foreach ($files as $file) {
     $c = file_get_contents($file);
-    $c = preg_replace('#<\?(?!php|=)#', '<?php ', $c);
+    $c = preg_replace('#<\?(?!php|=)#', '<?php', $c);
     file_put_contents($file, $c);
 }
 
