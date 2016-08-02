@@ -36,6 +36,7 @@ class TrlXmlToPoConverter
         $this->_poContent[] = '"Content-Type: text/plain; charset=UTF-8\n"';
         $this->_poContent[] = '';
         foreach ($this->_xmlDocument->text as $trl) {
+            if (!$trl->{$this->_targetLanguage}) continue;
             if ($trl->context) {
                 $this->_poContent[] = 'msgctxt "'.$trl->context.'"';
             }
