@@ -22,10 +22,10 @@ if (!$changed) {
     die("This script will update from 4.1, update to 4.1 first.\n");
 }
 
-if (!isset($c['config'])) $c['config'] = array();
-if (!isset($c['config']['platform'])) $c['config']['platform'] = array();
-if (!isset($c['config']['platform']['php'])) $c['config']['platform']['php'] = '5.3.17';
-if (!isset($c['config']['platform']['ext-tidy'])) $c['config']['platform']['ext-tidy'] = '2.0';
+if (!isset($c->config)) $c->config = new stdClass;
+if (!isset($c->config->platform)) $c->config->platform = new stdClass;
+if (!isset($c->config->platform->php)) $c->config->platform->php = '5.3.17';
+if (!isset($c->config->platform->{'ext-tidy'})) $c->config->platform->{'ext-tidy'} = '2.0';
 
 file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
 
