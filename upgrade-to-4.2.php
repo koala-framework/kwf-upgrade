@@ -40,6 +40,15 @@ foreach ($files as $file) {
     file_put_contents($file, $c);
 }
 
+echo "Add node_modules to gitignore";
+$gitignore = file_get_contents('.gitignore');
+if (strpos($gitignore, "/node_modules") === false) {
+    file_put_contents('.gitignore', $gitignore."/node_modules\n");
+}
+
+echo "Remove node_modules from vendor/koala-framework/koala-framework";
+exec("rm -rf vendor/koala-framework/koala-framework/node_modules");
+
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
 
