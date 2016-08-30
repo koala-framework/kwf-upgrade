@@ -49,6 +49,46 @@ if (strpos($gitignore, "/node_modules") === false) {
 echo "Remove node_modules from vendor/koala-framework/koala-framework";
 exec("rm -rf vendor/koala-framework/koala-framework/node_modules");
 
+
+//this has been don already in 3.11 but is now with 4.2 strictly enforced
+$files = glob_recursive('Component.php');
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+    $c = str_replace("public function getTemplateVars()", 'public function getTemplateVars(Kwf_Component_Renderer_Abstract $renderer)', $c);
+    $c = str_replace('public function getTemplateVars(Kwf_Component_Renderer_Abstract $renderer = null)', 'public function getTemplateVars(Kwf_Component_Renderer_Abstract $renderer)', $c);
+    $c = str_replace("::getTemplateVars()", '::getTemplateVars($renderer)', $c);
+    if ($c != $origC) {
+        file_put_contents($file, $c);
+    }
+}
+
+
+$files = glob_recursive('Component.php');
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+
+    $c = str_replace("public static function getSettings()", 'public static function getSettings($param = null)', $c);
+    if ($c != $origC) {
+        $c = str_replace("::getSettings()", '::getSettings($param)', $c);
+    }
+
+    $c = str_replace("public static function getSettings(\$masterComponentClass)", 'public static function getSettings($masterComponentClass = null)', $c);
+    if ($c != $origC) {
+        $c = str_replace("::getSettings()", '::getSettings($masterComponentClass)', $c);
+    }
+
+    $c = str_replace("public static function getSettings(\$masterComponent)", 'public static function getSettings($masterComponent = null)', $c);
+    if ($c != $origC) {
+        $c = str_replace("::getSettings()", '::getSettings($masterComponent)', $c);
+    }
+
+    if ($c != $origC) {
+        file_put_contents($file, $c);
+    }
+}
+
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
 
