@@ -96,6 +96,8 @@ if (!is_dir('cache/simpleStatic')) {
     echo "folder \"cache/simpleStatic\" created\n";
 }
 
+copy(__DIR__.'/upgrade-to-4.2/20160913Update4dot2.php', 'app/Updates/20160913Update4dot2.php');
+
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
 
