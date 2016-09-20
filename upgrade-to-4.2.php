@@ -46,6 +46,10 @@ if (strpos($gitignore, "/node_modules") === false) {
     file_put_contents('.gitignore', $gitignore."/node_modules\n");
 }
 
+if (strpos($gitignore, "/package.json") === false) {
+    file_put_contents('.gitignore', $gitignore."/package.json\n");
+}
+
 echo "Remove node_modules from vendor/koala-framework/koala-framework";
 exec("rm -rf vendor/koala-framework/koala-framework/node_modules");
 
