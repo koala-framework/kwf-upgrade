@@ -42,12 +42,15 @@ foreach ($files as $file) {
 
 echo "Add node_modules to gitignore";
 $gitignore = file_get_contents('.gitignore');
-if (strpos($gitignore, "/node_modules") === false) {
-    file_put_contents('.gitignore', $gitignore."/node_modules\n");
+$newIgnoreFiles = array();
+foreach (array("/node_modules", "/package.json") as $i) {
+    if (strpos($gitignore, $i) === false) {
+        $newIgnoreFiles[] = $i;
+    }
 }
 
-if (strpos($gitignore, "/package.json") === false) {
-    file_put_contents('.gitignore', $gitignore."/package.json\n");
+if ($newIgnoreFiles) {
+    file_put_contents('.gitignore', $gitignore.implode("\n", $newIgnoreFiles)."\n");
 }
 
 echo "Remove node_modules from vendor/koala-framework/koala-framework";
