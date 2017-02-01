@@ -21,6 +21,23 @@ if (!$changed) {
     die("This script will update from 4.2, update to 4.2 first.\n");
 }
 
+$usesTabsComponent = false;
+$files = array_merge(
+    glob_recursive('*.php'),
+    glob_recursive('*.ini')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+    $c = str_replace('Kwc_Tabs_Component', 'Kwc_Legacy_Tabs_Component', $c);
+    $c = str_replace('KwfTabs', 'KwfLegacyTabs', $c);
+    if ($c != $origC) {
+        $usesTabsComponent = true;
+        echo "Changed Kwc_Tabs_Component references in $file\n";
+        file_put_contents($file, $c);
+    }
+}
+
 file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
 
 echo "\n";
