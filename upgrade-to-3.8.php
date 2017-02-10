@@ -22,7 +22,7 @@ if (is_file('vkwf_branch')) {
     $c['repositories'] = array(
         array(
             'type' => 'composer',
-            'url' => 'http://packages.vivid-planet.com/'
+            'url' => 'https://packages.vivid-planet.com/'
         )
     );
 } else if (is_file('kwf_branch')) {
