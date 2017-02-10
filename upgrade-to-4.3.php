@@ -21,6 +21,8 @@ if (!$changed) {
     die("This script will update from 4.2, update to 4.2 first.\n");
 }
 
+file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
+
 $usesTabsComponent = false;
 $files = array_merge(
     glob_recursive('*.php'),
@@ -37,8 +39,6 @@ foreach ($files as $file) {
         file_put_contents($file, $c);
     }
 }
-
-file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
 
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
