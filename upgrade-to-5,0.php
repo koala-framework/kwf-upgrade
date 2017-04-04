@@ -41,6 +41,9 @@ foreach ($files as $file) {
     $c = preg_replace("#^ *kwfTrl: *kwfTrl,? *\n#m", '', $c);
     $c = preg_replace("#^ *ret.kwfTrl *= *kwfTrl; *\n#m", '', $c);
     $c = preg_replace("#kwf-jquery-plugin/(.*)#", 'kwf-webpack/loader/jquery-plugin-loader!$1', $c);
+    if (file_exists(substr($file, 0, -3).'.scss') && strpos($c, 'require(') !== false) {
+        $c = "require('.".substr($file, strrpos($file, '/'), -3).'.scss'."');\n".$c;
+    }
 
     if ($c != $origC) {
         file_put_contents($file, $c);
