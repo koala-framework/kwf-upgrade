@@ -36,8 +36,8 @@ foreach ($files as $file) {
     $c = file_get_contents($file);
     $origC = $c;
     $c = str_replace('require(\'kwf/', 'require(\'kwf/commonjs/', $c);
-    $c = preg_replace('#kwfTrl.trl(p?c?(Kwf)?)\(#', '__trl$1(', $c);
-    $c = preg_replace("#var kwfTrl *= *require\('kwf/commonjs/trl'\);\n#", '', $c);
+    $c = preg_replace('#(kwfTrl|t).trl(p?c?(Kwf)?)\(#', '__trl$2(', $c);
+    $c = preg_replace("#var (kwfTrl|t) *= *require\('kwf/commonjs/trl'\);\n#", '', $c);
     $c = preg_replace("#^ *kwfTrl: *kwfTrl,? *\n#m", '', $c);
     $c = preg_replace("#^ *ret.kwfTrl *= *kwfTrl; *\n#m", '', $c);
     $c = preg_replace("#kwf-jquery-plugin/(.*)#", 'kwf-webpack/loader/jquery-plugin-loader!$1', $c);
