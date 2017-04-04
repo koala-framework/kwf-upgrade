@@ -3,7 +3,7 @@
 require __DIR__.'/util/globrecursive.php';
 
 if (is_file('vkwf_branch') || is_file('kwf_branch')) {
-    die("This script will update from 4.3, update to 4.3 first.\n");
+    die("This script will update from 4.4, update to 4.4 first.\n");
 }
 if (!is_file('composer.json')) {
     die("composer.json not found.\n");

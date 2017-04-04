@@ -12,13 +12,13 @@ if (!is_file('composer.json')) {
 $changed = false;
 $c = json_decode(file_get_contents('composer.json'));
 foreach ($c->require as $packageName=>$packageVersion) {
-    if (substr($packageVersion, 0, 4) == "5.5.") {
-        $c->require->$packageName = 'dev-master';
+    if (substr($packageVersion, 0, 4) == "4.3.") {
+        $c->require->$packageName = '4.4.x-dev';
         $changed = true;
     }
 }
 if (!$changed) {
-    die("This script will update from 5.0, update to 5.0 first.\n");
+    die("This script will update from 4.3, update to 4.3 first.\n");
 }
 
 file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
