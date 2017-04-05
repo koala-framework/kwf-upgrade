@@ -1,6 +1,7 @@
 #!/usr/bin/php
 <?php
 require __DIR__.'/util/globrecursive.php';
+require __DIR__.'/util/deleteCacheFolder.php';
 
 if (is_file('vkwf_branch') || is_file('kwf_branch')) {
     die("This script will update from 4.4, update to 4.4 first.\n");
@@ -115,6 +116,32 @@ module.exports = new WebpackConfig.Config().extend(
 
 });";
 file_put_contents('webpack.config.js', $webpackConfig);
+
+if (!is_dir('cache/uglifyjs')) {
+    mkdir('cache/uglifyjs');
+    file_put_contents('cache/uglifyjs/.gitignore', "*\n!.gitignore\n");
+    system("git add cache/uglifyjs/.gitignore");
+}
+if (!is_dir('cache/commonjs')) {
+    mkdir('cache/commonjs');
+    file_put_contents('cache/commonjs/.gitignore', "*\n!.gitignore\n");
+    system("git add cache/commonjs/.gitignore");
+}
+if (!is_dir('cache/assetdeps')) {
+    mkdir('cache/assetdeps');
+    file_put_contents('cache/assetdeps/.gitignore', "*\n!.gitignore\n");
+    system("git add cache/assetdeps/.gitignore");
+}
+if (!is_dir('cache/assets')) {
+    mkdir('cache/assets');
+    file_put_contents('cache/assets/.gitignore', "*\n!.gitignore\n");
+    system("git add cache/assets/.gitignore");
+}
+deleteCacheFolder('cache/assets');
+deleteCacheFolder('cache/assetdeps');
+deleteCacheFolder('cache/commonjs');
+deleteCacheFolder('cache/uglifyjs');
+
 
 
 echo "\n";
