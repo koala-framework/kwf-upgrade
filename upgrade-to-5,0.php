@@ -18,6 +18,18 @@ foreach ($c->require as $packageName=>$packageVersion) {
         $changed = true;
     }
 }
+if (isset($c->require->{'koala-framework/kwc-susy'})) {
+    $c->require->{'koala-framework/kwc-susy'} = '1.2.x-dev';
+}
+if (isset($c->require->{'koala-framework/kwc-flickity'})) {
+    $c->require->{'koala-framework/kwc-flickity'} = '2.1.x-dev';
+}
+if (isset($c->require->{'vivid-planet/poi-tealium'})) {
+    $c->require->{'vivid-planet/poi-tealium'} = '1.1.x-dev';
+}
+if (isset($c->require->{'vivid-planet/poi-tools'})) {
+    $c->require->{'vivid-planet/poi-tools'} = '2.1.x-dev';
+}
 if (!$changed) {
     die("This script will update from 4.4, update to 4.4 first.\n");
 }
