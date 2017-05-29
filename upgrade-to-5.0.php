@@ -103,7 +103,7 @@ foreach ($files as $file) {
 
     //for now only web/js/* is converted
     //probably add more?
-    //or we could also support that in isi-loader (tough that is harder)
+    //or we could also support that in ini-loader (tough that is harder)
     $c = preg_replace_callback("#Admin.files\[\] = web/js/\*\n#", function($m) {
         $ret = '';
         foreach (glob_recursive('js/*.js') as $i) {
@@ -112,7 +112,7 @@ foreach ($files as $file) {
         return $ret;
     }, $c);
 
-    $c = str_replace('vendor/vivid-planet/api-check-version', 'api-check-version', $c);
+    $c = str_replace('vendor/vivid-planet/api-check-version', 'apiCheckVersion', $c);
     if ($c != $origC) {
         file_put_contents($file, $c);
     }
