@@ -30,6 +30,15 @@ if (isset($c->require->{'vivid-planet/poi-tealium'})) {
 if (isset($c->require->{'vivid-planet/poi-tools'})) {
     $c->require->{'vivid-planet/poi-tools'} = '2.1.x-dev';
 }
+if (isset($c->require->{'vivid-planet/poi-contact'})) {
+    $c->require->{'vivid-planet/poi-contact'} = '1.1.x-dev';
+}
+if (isset($c->require->{'vivid-planet/partnernet'})) {
+    $c->require->{'vivid-planet/partnernet'} = '2.2.x-dev';
+}
+if (isset($c->require->{'koala-framework/kwf-reactjs'})) {
+    $c->require->{'koala-framework/kwf-reactjs'} = '1.1.x-dev';
+}
 if (!$changed) {
     die("This script will update from 4.4, update to 4.4 first.\n");
 }
@@ -93,7 +102,21 @@ foreach ($files as $file) {
         file_put_contents($file, $c);
     }
 }
+/*
+$files = array_merge(
+    glob_recursive('*.css'),
+    glob_recursive('*.scss')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
 
+    $c = preg_replace('#(url *\( ?[\'"]? ?)/assets/#', '$1~', $c);
+    if ($c != $origC) {
+        file_put_contents($file, $c);
+    }
+}
+*/
 $files = array_merge(
     glob_recursive('dependencies.ini')
 );
@@ -154,7 +177,10 @@ deleteCacheFolder('cache/assetdeps');
 deleteCacheFolder('cache/commonjs');
 deleteCacheFolder('cache/uglifyjs');
 
-
+$ignore = file_get_contents('cache/.gitignore');
+$ignore = trim($ignore);
+$ignore .= "\ncache/webpack-dev-server-pid\n";
+file_put_contents('cache/.gitignore', $ignore);
 
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
