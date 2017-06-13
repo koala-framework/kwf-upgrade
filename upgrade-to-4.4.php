@@ -17,6 +17,9 @@ foreach ($c->require as $packageName=>$packageVersion) {
         $changed = true;
     }
 }
+if (isset($c->require->{'koala-framework/kwf-reactjs'})) {
+    $c->require->{'koala-framework/kwf-reactjs'} = '1.1.x-dev';
+}
 if (!$changed) {
     die("This script will update from 4.3, update to 4.3 first.\n");
 }
