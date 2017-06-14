@@ -18,6 +18,7 @@ foreach ($c->require as $packageName=>$packageVersion) {
         $changed = true;
     }
 }
+$extraWebpackConfig = "";
 if (isset($c->require->{'koala-framework/kwc-susy'})) {
     $c->require->{'koala-framework/kwc-susy'} = '1.2.x-dev';
 }
@@ -37,7 +38,24 @@ if (isset($c->require->{'vivid-planet/partnernet'})) {
     $c->require->{'vivid-planet/partnernet'} = '2.2.x-dev';
 }
 if (isset($c->require->{'koala-framework/kwf-reactjs'})) {
-    $c->require->{'koala-framework/kwf-reactjs'} = '1.1.x-dev';
+    unset($c->require->{'koala-framework/kwf-reactjs'});
+    $c->extra->{'require-npm'}->{'react'} = "^15.3.0";
+    $c->extra->{'require-npm'}->{'react-dom'} = "^15.3.0";
+    $c->extra->{'require-npm'}->{'babel-preset-react'} = "^6.11.1";
+$extraWebpackConfig .= "
+    module: {
+        rules: [{
+            test: /\.jsx$/,
+            exclude: /node_modules/,
+            loader: 'babel-loader',
+            options: {
+                presets: ['es2015', 'react']
+            }
+        }]
+    },
+    resolve: {
+        extensions: ['.jsx']
+    }";
 }
 if (!$changed) {
     die("This script will update from 4.4, update to 4.4 first.\n");
@@ -54,6 +72,7 @@ file_put_contents('.htaccess', $htaccess);
 $files = array_merge(
     glob_recursive('*.js')
 );
+
 foreach ($files as $file) {
     $c = file_get_contents($file);
     $origC = $c;
@@ -65,6 +84,28 @@ foreach ($files as $file) {
     $c = preg_replace("#kwf-jquery-plugin/(.*)#", 'kwf-webpack/loader/jquery-plugin-loader!$1', $c);
     if (file_exists(substr($file, 0, -3).'.scss') && strpos($c, 'require(') !== false) {
         $c = "require('.".substr($file, strrpos($file, '/'), -3).'.scss'."');\n".$c;
+    }
+
+    if ($c != $origC) {
+        file_put_contents($file, $c);
+    }
+}
+
+$files = array_merge(
+    glob_recursive('*.jsx')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+    //TODO
+    //$c = str_replace('require(\'kwf/', 'require(\'kwf/commonjs/', $c);
+    //$c = preg_replace('#(kwfTrl|t)\.trl(p?c?(Kwf)?)\(#', '__trl$2(', $c);
+    //$c = preg_replace("#var (kwfTrl|t) *= *require\('kwf/commonjs/trl'\);\n#", '', $c);
+    //$c = preg_replace("#^ *kwfTrl: *kwfTrl,? *\n#m", '', $c);
+    //$c = preg_replace("#^ *ret.kwfTrl *= *kwfTrl; *\n#m", '', $c);
+    $c = preg_replace("#kwf-jquery-plugin/(.*)#", 'kwf-webpack/loader/jquery-plugin-loader!$1', $c);
+    if (file_exists(substr($file, 0, -4).'.scss') && strpos($c, 'import ') !== false) {
+        $c = "import '.".substr($file, strrpos($file, '/'), -4).'.scss'."';\n".$c;
     }
 
     if ($c != $origC) {
@@ -141,46 +182,28 @@ foreach ($files as $file) {
     }
 }
 
-
 $webpackConfig = "'use strict';
 const WebpackConfig = require('webpack-config');
 
 module.exports = new WebpackConfig.Config().extend(
     'kwf-webpack/config/webpack.kwc.config.js'
 ).merge({
-
-});";
+$extraWebpackConfig
+});
+";
 file_put_contents('webpack.config.js', $webpackConfig);
+system('git add webpack.config.js');
 
-if (!is_dir('cache/uglifyjs')) {
-    mkdir('cache/uglifyjs');
-    file_put_contents('cache/uglifyjs/.gitignore', "*\n!.gitignore\n");
-    system("git add cache/uglifyjs/.gitignore");
+if (!is_dir('cache/webpack')) {
+    mkdir('cache/webpack');
+    file_put_contents('cache/webpack/.gitignore', "*\n!.gitignore\n");
+    system("git add cache/webpack/.gitignore");
 }
-if (!is_dir('cache/commonjs')) {
-    mkdir('cache/commonjs');
-    file_put_contents('cache/commonjs/.gitignore', "*\n!.gitignore\n");
-    system("git add cache/commonjs/.gitignore");
-}
-if (!is_dir('cache/assetdeps')) {
-    mkdir('cache/assetdeps');
-    file_put_contents('cache/assetdeps/.gitignore', "*\n!.gitignore\n");
-    system("git add cache/assetdeps/.gitignore");
-}
-if (!is_dir('cache/assets')) {
-    mkdir('cache/assets');
-    file_put_contents('cache/assets/.gitignore', "*\n!.gitignore\n");
-    system("git add cache/assets/.gitignore");
-}
+
 deleteCacheFolder('cache/assets');
 deleteCacheFolder('cache/assetdeps');
 deleteCacheFolder('cache/commonjs');
 deleteCacheFolder('cache/uglifyjs');
-
-$ignore = file_get_contents('cache/.gitignore');
-$ignore = trim($ignore);
-$ignore .= "\ncache/webpack-dev-server-pid\n";
-file_put_contents('cache/.gitignore', $ignore);
 
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
