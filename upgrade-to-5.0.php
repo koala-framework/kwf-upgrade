@@ -200,7 +200,6 @@ if (!is_dir('cache/webpack')) {
     system("git add cache/webpack/.gitignore");
 }
 
-deleteCacheFolder('cache/assets');
 deleteCacheFolder('cache/assetdeps');
 deleteCacheFolder('cache/commonjs');
 deleteCacheFolder('cache/uglifyjs');
