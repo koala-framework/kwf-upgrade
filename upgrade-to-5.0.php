@@ -194,6 +194,33 @@ $extraWebpackConfig
 file_put_contents('webpack.config.js', $webpackConfig);
 system('git add webpack.config.js');
 
+if (file_exists('dependencies.ini') && file_exists('themes/Theme/Component.php')) {
+    $c = file_get_contents('dependencies.ini');
+    var_dump($c);
+    if (preg_match("/^Frontend\\.files\\[\\] = https:\\/\\/fast\\.fonts\\.net\\/cssapi\\/(.*)\\.css\n?/m", $c, $m)) {
+        $projectId = $m[1];
+        $c = str_replace($m[0], '', $c);
+        file_put_contents('dependencies.ini', $c);
+
+
+        $js = "var WebFont = require('webfontloader');\n".
+            "WebFont.load({\n".
+            "    monotype: {\n".
+            "        projectId: '$projectId'\n".
+            "   }\n".
+            "});\n";
+        if (!file_exists('themes/Theme/Web.js')) {
+            $c = file_get_contents('themes/Theme/Component.php');
+            $c = preg_replace("#web/themes/Theme/Master.js';\n( *)#", "$0\$ret['assets']['files'][] = 'web/themes/Theme/Web.js';\n$1", $c);
+            file_put_contents('themes/Theme/Component.php', $c);
+            file_put_contents('themes/Theme/Web.js', $js);
+            system('git add themes/Theme/Web.js');
+        } else {
+            file_put_contents('themes/Theme/Web.js', $js, FILE_APPEND);
+        }
+    }
+}
+
 if (!is_dir('cache/webpack')) {
     mkdir('cache/webpack');
     file_put_contents('cache/webpack/.gitignore', "*\n!.gitignore\n");
