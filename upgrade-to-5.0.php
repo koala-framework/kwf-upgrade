@@ -143,7 +143,7 @@ foreach ($files as $file) {
         file_put_contents($file, $c);
     }
 }
-/*
+
 $files = array_merge(
     glob_recursive('*.css'),
     glob_recursive('*.scss')
@@ -157,7 +157,7 @@ foreach ($files as $file) {
         file_put_contents($file, $c);
     }
 }
-*/
+
 $files = array_merge(
     glob_recursive('dependencies.ini')
 );
