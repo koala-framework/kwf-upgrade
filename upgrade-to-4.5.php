@@ -23,8 +23,7 @@ if (!$changed) {
 
 file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
 
-$usesMedialelement = false;
-$files = array_merge(glob_recursive('*.php'), glob_recursive('*.ini'));
+$files = array_merge(glob_recursive('*.php'), glob_recursive('*.tpl'));
 foreach ($files as $file) {
     $c = file_get_contents($file);
     $origC = $c;
@@ -32,7 +31,6 @@ foreach ($files as $file) {
     $c = str_replace("htmlspecialchars", 'Kwf_Util_HtmlSpecialChars::filter', $c);
 
     if ($c != $origC) {
-        echo "htmlspecialchars is used, change them to use Kwf_Util_HtmlSpecialChars\n";
         file_put_contents($file, $c);
     }
 }
