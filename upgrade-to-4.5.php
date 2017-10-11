@@ -20,6 +20,9 @@ foreach ($c->require as $packageName=>$packageVersion) {
 if (!$changed) {
     die("This script will update from 4.4, update to 4.4 first.\n");
 }
+if (isset($c->extra->{'require-bower'}->jquery)) {
+    unset($c->extra->{'require-bower'}->jquery);
+}
 
 file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
 
