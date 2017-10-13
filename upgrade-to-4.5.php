@@ -31,6 +31,7 @@ foreach ($files as $file) {
     $c = file_get_contents($file);
     $origC = $c;
 
+    $c = str_replace("htmlspecialchars_decode", 'Kwf_Util_HtmlSpecialChars::decode', $c);
     $c = str_replace("htmlspecialchars", 'Kwf_Util_HtmlSpecialChars::filter', $c);
 
     if ($c != $origC) {
