@@ -92,6 +92,20 @@ foreach ($files as $file) {
 }
 
 $files = array_merge(
+    glob_recursive('*.js'),
+    glob_recursive('*.jsx')
+);
+
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+    $c = preg_replace('#([\'"])/(kwf|vkwf|admin|assets|api)#', 'KWF_BASE_URL+$1/$2', $c);
+    if ($c != $origC) {
+        file_put_contents($file, $c);
+    }
+}
+
+$files = array_merge(
     glob_recursive('*.jsx')
 );
 foreach ($files as $file) {
