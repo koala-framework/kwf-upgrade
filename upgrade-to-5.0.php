@@ -142,7 +142,12 @@ foreach ($files as $file) {
     $c = preg_replace_callback('#\$ret\[\'assets\'\]\[\'dep\'\]\[\] = \'FontFace(.*)\';#', function($m) {
         $font = strtolower($m[1]);
         if (!file_exists('vendor/bower_components/'.$font)) {
-            $font = $font .'-fonts';
+            foreach (array('font', '-font', 'fonts', '-fonts') as $name) {
+                if (file_exists("vendor/bower_components/{$font}{$name}")) {
+                    $font = $font . $name;
+                    break;
+                }
+            }
         }
         return '$ret[\'assets\'][\'files\'][] = \''.$font.'/fonts.css\';';
     }, $c);
