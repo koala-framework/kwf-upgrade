@@ -164,6 +164,7 @@ foreach ($files as $file) {
     $c = file_get_contents($file);
     $origC = $c;
 
+    $c = preg_replace('#(\/assets)(?!\/web)#', '$1/web', $c);
     $c = preg_replace('#(url *\( ?[\'"]? ?)/assets/#', '$1~', $c);
     if ($c != $origC) {
         file_put_contents($file, $c);
