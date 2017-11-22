@@ -83,6 +83,7 @@ foreach ($files as $file) {
     $c = preg_replace("#^ *ret.kwfTrl *= *kwfTrl; *\n#m", '', $c);
     $c = preg_replace("#kwf-jquery-plugin/(.*)#", 'kwf-webpack/loader/jquery-plugin-loader!$1', $c);
     $c = preg_replace('#([\'"])/(kwf|vkwf|admin|assets|api)#', 'KWF_BASE_URL+$1/$2', $c);
+    $c = preg_replace("#process\.env\.NODE_ENV \=.+\n#", '', $c);
     if (file_exists(substr($file, 0, -3).'.scss') && strpos($c, 'require(') !== false) {
         $c = "require('.".substr($file, strrpos($file, '/'), -3).'.scss'."');\n".$c;
     }
