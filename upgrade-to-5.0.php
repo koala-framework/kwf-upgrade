@@ -202,6 +202,31 @@ foreach ($files as $file) {
     }
 }
 
+$files = array_merge(
+    glob_recursive('config.ini')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+
+    foreach (parse_ini_string($c, true) as $section) {
+        $apiKeys = array();
+        foreach ($section as $key => $value) {
+            if (substr($key, 0, 17) != 'googleMapsApiKeys') continue;
+
+            $apiKeys[] = $key;
+        }
+
+        if (count($apiKeys) === 1) {
+            $c = str_replace($apiKeys[0], 'googleMapsApiKey', $c);
+        }
+    }
+
+    if ($c != $origC) {
+        file_put_contents($file, $c);
+    }
+}
+
 $webpackConfig = "'use strict';
 const WebpackConfig = require('webpack-config');
 
@@ -253,4 +278,3 @@ deleteCacheFolder('cache/uglifyjs');
 
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
-
