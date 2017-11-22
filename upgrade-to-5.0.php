@@ -177,16 +177,21 @@ foreach ($files as $file) {
     $c = file_get_contents($file);
     $origC = $c;
 
-    //for now only web/js/* is converted
-    //probably add more?
-    //or we could also support that in ini-loader (tough that is harder)
-    $c = preg_replace_callback("#Admin.files\[\] = web/js/\*\n#", function($m) {
-        $ret = '';
-        foreach (glob_recursive('js/*.js') as $i) {
-            $ret .= "Admin.files[] = web/$i\n";
+    foreach (parse_ini_string($c) as $key => $value) {
+        if (strpos($key, '.files') === false) continue;
+
+        foreach ($value as $depFile) {
+            if (strpos($depFile, '*') === false) continue;
+
+            $c = preg_replace_callback('#' . preg_quote("{$key}[] = $depFile\n") . '#', function($m) use($depFile) {
+                $ret = '';
+                foreach (glob_recursive(str_replace('web/', '', $depFile) . '.js') as $i) {
+                    $ret .= "Admin.files[] = web/$i\n";
+                }
+                return $ret;
+            }, $c);
         }
-        return $ret;
-    }, $c);
+    }
 
     $c = str_replace('vendor/vivid-planet/api-check-version', 'apiCheckVersion', $c);
     if ($c != $origC) {
