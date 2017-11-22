@@ -6,6 +6,7 @@ function glob_recursive($pattern, $flags = 0) {
         if (dirname($dir) == './vkwf-lib' || $dir == './vkwf-lib') continue;
         if (dirname($dir) == './library' || $dir == './library') continue;
         if (dirname($dir) == './vendor' || $dir == './vendor') continue;
+        if (dirname($dir) == './node_modules' || $dir == './node_modules') continue;
         $files = array_merge($files, glob_recursive($dir.'/'.basename($pattern), $flags));
     }
     return $files;
