@@ -140,6 +140,7 @@ foreach ($files as $file) {
     $c = file_get_contents($file);
     $origC = $c;
     $c = str_replace('require(\'kwf/', 'require(\'kwf/commonjs/', $c);
+    $c = preg_replace('#^.*[\'"]node_env[\'"] \=\>.+\n#m', '', $c);
     $c = preg_replace_callback('#\$ret\[\'assets\'\]\[\'dep\'\]\[\] = \'FontFace(.*)\';#', function($m) {
         $font = strtolower($m[1]);
         if (!file_exists('vendor/bower_components/'.$font)) {
