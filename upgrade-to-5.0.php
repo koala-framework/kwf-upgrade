@@ -57,6 +57,10 @@ $extraWebpackConfig .= "
         extensions: ['.jsx']
     }";
 }
+if (isset($c->extra->{'require-bower'}->jquery)) {
+    unset($c->extra->{'require-bower'}->jquery);
+}
+
 if (!$changed) {
     die("This script will update from 4.5, update to 4.5 first.\n");
 }
