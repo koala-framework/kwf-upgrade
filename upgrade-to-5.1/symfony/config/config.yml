@@ -1,0 +1,10 @@
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+    - { resource: services.yml }
+
+parameters:
+
+framework:
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
