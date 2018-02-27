@@ -1,4 +1,6 @@
 <?php
+use Symfony\Component\Config\Loader\LoaderInterface;
+
 class AppKernel extends Kwf_SymfonyKernel
 {
     public function registerBundles()
@@ -20,5 +22,10 @@ class AppKernel extends Kwf_SymfonyKernel
         }
 
         return $bundles;
+    }
+
+    public function registerContainerConfiguration(LoaderInterface $loader)
+    {
+        $loader->load($this->getRootDir().'/config/config_'.$this->getEnvironment().'.yml');
     }
 }
