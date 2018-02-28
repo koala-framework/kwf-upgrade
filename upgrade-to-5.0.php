@@ -41,6 +41,7 @@ if (isset($c->require->{'koala-framework/kwf-reactjs'})) {
     unset($c->require->{'koala-framework/kwf-reactjs'});
     $c->extra->{'require-npm'}->{'react'} = "^15.3.0";
     $c->extra->{'require-npm'}->{'react-dom'} = "^15.3.0";
+    $c->extra->{'require-npm'}->{'babel-preset-env'} = "^1.6.1";
     $c->extra->{'require-npm'}->{'babel-preset-react'} = "^6.11.1";
 $extraWebpackConfig .= "
     module: {
@@ -49,7 +50,14 @@ $extraWebpackConfig .= "
             exclude: /node_modules/,
             loader: 'babel-loader',
             options: {
-                presets: ['es2015', 'react']
+                presets: [
+                    ['env', {
+                        'targets': {
+                            'browsers': ['>0.4% in alt-EU']
+                        }
+                    }],
+                    'react'
+                ]
             }
         }]
     },
