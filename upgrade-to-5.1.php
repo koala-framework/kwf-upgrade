@@ -28,24 +28,68 @@ foreach (glob_recursive('*.php') as $file) {
     $c = file_get_contents($file);
     $origC = $c;
 
-    $c = str_replace("extends Kwc_Newsletter", 'extends KwcNewsletter_Kwc_Newsletter', $c);
+    foreach (array("Kwc_NewsletterCategory", "Kwc_Newsletter") as $class) {
+        $c = str_replace("extends {$class}", 'extends KwcNewsletter_Kwc_Newsletter', $c);
+        $c = str_replace("'{$class}", '\'KwcNewsletter_Kwc_Newsletter', $c);
+        $c = str_replace("\"{$class}", '"KwcNewsletter_Kwc_Newsletter', $c);
+    }
+
+    $dependentModels = array(
+        'QueueLog' => 'QueueLogs',
+        'Log' => 'Logs',
+        'ToCategory' => 'ToCategories',
+    );
+    foreach ($dependentModels as $oldName => $newName) {
+        $c = str_replace("'{$oldName}'", "'{$newName}'", $c);
+        $c = str_replace("\"{$oldName}\"", "\"{$newName}\"", $c);
+    }
+
+    $models = array(
+        'KwcNewsletter_Kwc_Newsletter_CategoriesModel' => 'Categories',
+        'KwcNewsletter_Kwc_Newsletter_LogModel' => 'NewsletterLogs',
+        'KwcNewsletter_Kwc_Newsletter_QueueLogModel' => 'NewsletterQueueLogs',
+        'KwcNewsletter_Kwc_Newsletter_QueueModel' => 'NewsletterQueues',
+        'KwcNewsletter_Kwc_Newsletter_Model' => 'Newsletters',
+        'KwcNewsletter_Kwc_Newsletter_Subscribe_CategoriesModel' => 'SubscribeCategories',
+        'KwcNewsletter_Kwc_Newsletter_Subscribe_LogsModel' => 'SubscriberLogs',
+        'KwcNewsletter_Kwc_Newsletter_Subscribe_Model' => 'Subscribers',
+        'KwcNewsletter_Kwc_Newsletter_Subscribe_SubscriberToCategory' => 'SubscribersToCategories'
+    );
+    foreach ($models as $oldClass => $newClass) {
+        if (strpos($c, "extends {$oldClass}") !== false) {
+            $c = str_replace("<?php", "<?php\n\nuse KwcNewsletter\\Bundle\\Model\\{$newClass};\n", $c);
+            $c = str_replace("extends {$oldClass}", "extends {$newClass}", $c);
+        } else {
+            $c = str_replace($oldClass, "KwcNewsletter\\Bundle\\Model\\{$newClass}", $c);
+        }
+    }
 
     if ($c != $origC) {
         echo "renamed to KwcNewsletter_Kwc_Newsletter: $file\n";
         file_put_contents($file, $c);
 
         $addNewsletterPackage = true;
-
     }
 }
 
-if ($addNewsletterPackage) {
-    $c = json_decode(file_get_contents('composer.json'));
-    $c->require->{'koala-framework/kwc-newsletter'} = "1.0.x-dev";
-    echo "Added koala-framework/kwc-newsletter to require composer.json\n";
-    file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
+$files = array_merge(
+    glob_recursive('*.twig'),
+    glob_recursive('*.tpl')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
 
-    require_once __DIR__ . '/upgrade-to-5.1/add-symfony.php';
+    foreach (array("NewsletterCategory", "Newsletter") as $dir) {
+        $c = str_replace("vendor/koala-framework/koala-framework/Kwc/{$dir}", "vendor/koala-framework/kwc-newsletter/KwcNewsletter/Kwc/Newsletter", $c);
+    }
+
+    if ($c != $origC) {
+        echo "renamed to kwc-newsletter vendor path: $file\n";
+        file_put_contents($file, $c);
+
+        $addNewsletterPackage = true;
+    }
 }
 
 echo "\n";
