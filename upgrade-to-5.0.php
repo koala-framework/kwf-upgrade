@@ -32,7 +32,10 @@ if (isset($c->require->{'vivid-planet/poi-tools'})) {
     $c->require->{'vivid-planet/poi-tools'} = '2.1.x-dev';
 }
 if (isset($c->require->{'vivid-planet/poi-contact'})) {
-    $c->require->{'vivid-planet/poi-contact'} = '1.1.x-dev';
+    $c->require->{'vivid-planet/poi-contact'} = '1.2.x-dev';
+}
+if (isset($c->require->{'vivid-planet/poi-dealer-website-plugin'})) {
+    $c->require->{'vivid-planet/poi-dealer-website-plugin'} = '1.2.x-dev';
 }
 if (isset($c->require->{'vivid-planet/partnernet'})) {
     $c->require->{'vivid-planet/partnernet'} = '2.2.x-dev';
