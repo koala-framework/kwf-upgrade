@@ -92,6 +92,15 @@ foreach ($files as $file) {
     }
 }
 
+if ($addNewsletterPackage) {
+    $c = json_decode(file_get_contents('composer.json'));
+    $c->require->{'koala-framework/kwc-newsletter'} = "1.0.x-dev";
+    echo "Added koala-framework/kwc-newsletter to require composer.json\n";
+    file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
+
+    require_once __DIR__ . '/upgrade-to-5.1/add-symfony.php';
+}
+
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
 
