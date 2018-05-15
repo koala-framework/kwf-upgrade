@@ -70,6 +70,8 @@ foreach (glob_recursive('*.php') as $file) {
 
         $addNewsletterPackage = true;
     }
+
+    copy(__DIR__ . '/upgrade-to-5.1/20180501KwcNewsletter.sql', 'app/Update/20180501KwcNewsletter.sql');
 }
 
 $files = array_merge(
