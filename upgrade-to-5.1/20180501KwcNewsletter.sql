@@ -1,0 +1,2 @@
+UPDATE `kwc_newsletter_queues` SET `recipient_model` = "KwcNewsletter\\Bundle\\Model\\Subscribers" WHERE `recipient_model` IN ("Kwc_Newsletter_Subscribe_Model","Kwc_NewsletterCategory_Subscribe_Model");
+UPDATE `kwc_newsletter_queue_logs` SET `recipient_model` = "KwcNewsletter\\Bundle\\Model\\Subscribers" WHERE `recipient_model` IN ("Kwc_Newsletter_Subscribe_Model","Kwc_NewsletterCategory_Subscribe_Model");
