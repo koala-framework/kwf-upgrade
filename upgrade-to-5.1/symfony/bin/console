@@ -11,6 +11,6 @@ set_time_limit(0);
 
 $input = new ArgvInput();
 
-$kernel = new AppKernel();
+$kernel = Kwf_Util_Symfony::getKernel();
 $application = new Application($kernel);
 $application->run($input);
