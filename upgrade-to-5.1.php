@@ -70,8 +70,6 @@ foreach (glob_recursive('*.php') as $file) {
 
         $addNewsletterPackage = true;
     }
-
-    copy(__DIR__ . '/upgrade-to-5.1/20180501KwcNewsletter.sql', 'app/Update/20180501KwcNewsletter.sql');
 }
 
 $files = array_merge(
@@ -95,6 +93,8 @@ foreach ($files as $file) {
 }
 
 if ($addNewsletterPackage) {
+    copy(__DIR__ . '/upgrade-to-5.1/20180501KwcNewsletter.sql', 'app/Update/20180501KwcNewsletter.sql');
+
     $c = json_decode(file_get_contents('composer.json'));
     $c->require->{'koala-framework/kwc-newsletter'} = "1.0.x-dev";
     echo "Added koala-framework/kwc-newsletter to require composer.json\n";
