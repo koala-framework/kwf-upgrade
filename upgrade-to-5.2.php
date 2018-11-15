@@ -1,5 +1,6 @@
 #!/usr/bin/php
 <?php
+
 require __DIR__.'/util/globrecursive.php';
 
 if (is_file('vkwf_branch') || is_file('kwf_branch')) {
@@ -45,6 +46,19 @@ foreach ($files as $file) {
     if ($c != $origC) {
         file_put_contents($file, $c);
     }
+}
+
+$file = 'symfony/config/config.yml';
+if (is_file($file)) {
+    $c = file_get_contents($file);
+    $c .= <<<YML
+
+kwf:
+    model:
+        normalizer_camel_case: false
+
+YML;
+    file_put_contents($file, $c);
 }
 
 echo "\n";
