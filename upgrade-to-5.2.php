@@ -48,22 +48,24 @@ foreach ($files as $file) {
 }
 
 // change IntegratorTemplates to repo-version (legacy-version for compatibility)
+$integratorTemplateUsed = false;
 foreach (glob_recursive('*.php') as $file) {
     $c = file_get_contents($file);
     $origC = $c;
-    $c = str_replace("extends Kwc_Advanced_IntegratorTemplate_", 'extends KwcIntegratorTemplate_Kwc_Advanced_IntegratorTemplateLegacy_', $c);
-    $c = str_replace("'Kwc_Advanced_IntegratorTemplate_", '\'KwcIntegratorTemplate_Kwc_Advanced_IntegratorTemplateLegacy_', $c);
-    $c = str_replace("\"Kwc_Advanced_IntegratorTemplate_", '"KwcIntegratorTemplate_Kwc_Advanced_IntegratorTemplateLegacy_', $c);
+    $c = str_replace("Kwc_Advanced_IntegratorTemplate_", 'KwcIntegratorTemplate_Kwc_Advanced_IntegratorTemplateLegacy_', $c);
 
     if ($c != $origC) {
         echo "renamed to KwcIntegratorTemplate_Kwc_Advanced_IntegratorTemplate_Component: $file\n";
         file_put_contents($file, $c);
+        $integratorTemplateUsed = true;
     }
 }
-$c = json_decode(file_get_contents('composer.json'));
-$c->require->{'koala-framework/kwc-integrator-template'} = "1.0.x-dev";
-echo "Added koala-framework/kwc-integrator-template to require composer.json\n";
-file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
+if ($integratorTemplateUsed) {
+    $c = json_decode(file_get_contents('composer.json'));
+    $c->require->{'koala-framework/kwc-integrator-template'} = "1.0.x-dev";
+    echo "Added koala-framework/kwc-integrator-template to require composer.json\n";
+    file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0)));
+}
 
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
