@@ -82,6 +82,8 @@ file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT')
 $htaccess = file_get_contents('.htaccess');
 $htaccess = str_replace("RewriteEngine on\n", "RewriteEngine on\n\nRewriteRule ^assets/build/(.*)$ build/assets/$1 [L]\n", $htaccess);
 $htaccess = preg_replace("#^RewriteRule .* bootstrap\.php \[L\]#m", "RewriteCond %{REQUEST_URI} !/build/assets/\n$0", $htaccess);
+$htaccess .= "\n<If \"%{REQUEST_URI} =~ m#^(/[a-z0-9]+)?/build/assets/#\">\n    Header set Access-Control-Allow-Origin \"*\"\n    Header set Cache-Control \"public, max-age=2419200\"\n</If>\n";
+$htaccess .= "\n<If \"%{REQUEST_URI} =~ m#^(/[a-z0-9]+)?/build/assets/.+\.(css|eot|html|js|json|svg|ttf|xml)$#\">\n    SetOutputFilter DEFLATE\n</If>\n";
 file_put_contents('.htaccess', $htaccess);
 
 $files = array_merge(
