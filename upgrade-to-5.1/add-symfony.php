@@ -44,6 +44,7 @@ $originalC = clone $c;
 if (!isset($c->autoload)) $c->autoload = json_decode("{}");
 if (!isset($c->autoload->classmap)) $c->autoload->classmap = array();
 if (!in_array('symfony/AppKernel.php', $c->autoload->classmap)) $c->autoload->classmap[] = 'symfony/AppKernel.php';
+if (!isset($c->autoload->{"psr-4"}->{"App\\"})) $c->autoload->{"psr-4"}->{"App\\"} = 'symfony/src';
 
 $packages = array(
     "symfony/symfony" => "^2.8",
