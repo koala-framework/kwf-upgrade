@@ -47,6 +47,19 @@ foreach ($files as $file) {
     }
 }
 
+// mark RTE styles as required
+$files = array_merge(
+    glob_recursive('Web.scss')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+    $c = preg_replace("#}\s(\/\*)\s(.+)\s\*\/$#m", "} /*! $2 */", $c);
+    if ($c != $origC) {
+        file_put_contents($file, $c);
+    }
+}
+
 // change IntegratorTemplates to repo-version (legacy-version for compatibility)
 $integratorTemplateUsed = false;
 foreach (glob_recursive('*.php') as $file) {
