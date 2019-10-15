@@ -80,6 +80,54 @@ if ($integratorTemplateUsed) {
     file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0)));
 }
 
+// add kwf-shop if necessary
+$addShopPackage = false;
+foreach (glob_recursive('*.php') as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+
+    $c = str_replace("extends Kwc_Shop_", 'extends KwcShop_Kwc_Shop_', $c);
+    $c = str_replace("'Kwc_Shop_", '\'KwcShop_Kwc_Shop_', $c);
+    $c = str_replace("\"Kwc_Shop_", '"KwcShop_Kwc_Shop_', $c);
+    $c = str_replace("(Kwc_Shop_", '(KwcShop_Kwc_Shop_', $c);
+    $c = str_replace("= Kwc_Shop_", '= KwcShop_Kwc_Shop_', $c);
+    $c = str_replace("new Kwc_Shop_", 'new KwcShop_Kwc_Shop_', $c);
+
+    if ($c != $origC) {
+        echo "renamed to KwcShop_Kwc_Shop_: $file\n";
+        file_put_contents($file, $c);
+
+        $addShopPackage = true;
+    }
+}
+
+$files = array_merge(
+    glob_recursive('*.twig'),
+    glob_recursive('*.tpl')
+);
+foreach ($files as $file) {
+    $c = file_get_contents($file);
+    $origC = $c;
+
+    foreach (array("Shop") as $dir) {
+        $c = str_replace("vendor/koala-framework/koala-framework/Kwc/{$dir}", "vendor/koala-framework/kwc-shop/KwcShop/Kwc/Shop", $c);
+    }
+
+    if ($c != $origC) {
+        echo "renamed to kwc-shop vendor path: $file\n";
+        file_put_contents($file, $c);
+
+        $addShopPackage = true;
+    }
+}
+
+if ($addShopPackage) {
+    $c = json_decode(file_get_contents('composer.json'));
+    $c->require->{'koala-framework/kwc-shop'} = "1.0.x-dev";
+    echo "Added koala-framework/kwc-shop to require composer.json\n";
+    file_put_contents('composer.json', json_encode($c, (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0) + (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0) ));
+}
+
 echo "\n";
 echo "run now 'composer update' to update dependencies\n";
 
