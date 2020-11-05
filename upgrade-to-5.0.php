@@ -116,10 +116,9 @@ $files = array_merge(
 foreach ($files as $file) {
     $c = file_get_contents($file);
     $origC = $c;
-    //TODO
     $c = str_replace('from \'kwf/', 'from \'kwf/commonjs/', $c);
-    //$c = preg_replace('#(kwfTrl|t)\.trl(p?c?(Kwf)?)\(#', '__trl$2(', $c);
-    //$c = preg_replace("#var (kwfTrl|t) *= *require\('kwf/commonjs/trl'\);\n#", '', $c);
+    $c = preg_replace("#import (kwfTrl|t|trl) from 'kwf/commonjs/trl';\n#", '', $c);
+    $c = preg_replace('#(kwfTrl|t|trl)\.trl(p?c?(Kwf)?)\(#', '__trl$2(', $c);
     //$c = preg_replace("#^ *kwfTrl: *kwfTrl,? *\n#m", '', $c);
     //$c = preg_replace("#^ *ret.kwfTrl *= *kwfTrl; *\n#m", '', $c);
     $c = preg_replace("#kwf-jquery-plugin/(.*)#", 'kwf-webpack/loader/jquery-plugin-loader!$1', $c);
