@@ -8,3 +8,9 @@ parameters:
 framework:
     router:
         resource: "%kernel.root_dir%/config/routing.yml"
+
+fos_rest:
+    format_listener:
+        enabled: true
+        rules:
+            - { path: '^/api/', fallback_format: json }
